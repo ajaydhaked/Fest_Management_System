@@ -2,7 +2,7 @@ from starlette.templating import Jinja2Templates
 from fastapi import FastAPI,status
 from starlette.requests import Request
 from fastapi.staticfiles import StaticFiles
-from models.allmodels import Student
+from models.allmodels import Student,Event
 
 import psycopg2
 
@@ -23,8 +23,13 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 conn=psycopg2.connect(
-        database="21CS10033",user="21CS10033",password="21CS10033",host="10.5.18.68"
+        database="techfest",user="postgres",password="Ajay@123",host="localhost",port="5432"
     )
+    
+if conn:
+    print("connected to database")
+else:    
+    print("not connected to database")
 
 @app.post("/student",status_code=status.HTTP_201_CREATED)
 async def new_student(student:Student):
@@ -39,17 +44,19 @@ async def new_student(student:Student):
 
 @app.get("/")
 def read_root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("index.html", {"request": request,"page":"home"})
 
 @app.get("/events")
 def read_root(request: Request):
     cur = conn.cursor()
     cur.execute("SELECT * FROM A4_event")
     events = cur.fetchall()
-    print(events)
-    return templates.TemplateResponse("events.html", {"request": request})
+    cur.close()
+    for i in range(len(events)):
+        events[i] = Event(event_id=events[i][0],name=events[i][1],date=events[i][2].strftime("%d-%m-%Y"),type=events[i][3],description=events[i][4])
+    return templates.TemplateResponse("events.html", {"request": request, "events": events,"page":"events"})
 
 @app.get("/about")
 def read_root(request: Request):
-    return templates.TemplateResponse("about.html", {"request": request})
+    return templates.TemplateResponse("about.html", {"request": request,"page":"about"})
 
