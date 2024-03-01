@@ -49,7 +49,7 @@ async def read_root(request: Request):
     cur.close()
     for i in range(len(events)):
         events[i] = Event(event_id=events[i][0],name=events[i][1],date=events[i][2].strftime("%d-%m-%Y"),type=events[i][3],description=events[i][4])
-    return templates.TemplateResponse("events.html", {"request": request, "events": events,"page":"events"})
+    return templates.TemplateResponse("/events/events.html", {"request": request, "events": events,"page":"events"})
 
 @app.get("/about")
 async def read_root(request: Request):
