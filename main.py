@@ -3,7 +3,7 @@ from starlette.templating import Jinja2Templates
 from fastapi import FastAPI,status,Depends,Form,HTTPException
 from starlette.requests import Request
 from fastapi.staticfiles import StaticFiles
-from models.allmodels import Student,Event
+from models.allmodels import *
 from fastapi.responses import RedirectResponse
 import starlette.status as status
 from fastapi.security import OAuth2PasswordBearer
@@ -21,6 +21,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+user_database = {
+    "swadhinsatapathy": {
+        "username": "swadhinsatapathy",
+        "password": "secretpassword"
+    }
+}
+
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
@@ -53,18 +61,54 @@ async def read_root(request: Request,message: str = None):
 async def read_root(request: Request):
     return templates.TemplateResponse("about.html", {"request": request,"page":"about"})
 
-@app.get("/login")
-async def read_root(request: Request,message: str = None):
-    print(message)
-    print(request.headers.get("message"))
-    if request.headers.get("message"):
-        message = request.headers.get("message")
-    return templates.TemplateResponse("login.html", {"request": request,"page":"login"})
+@app.get("/signup")
+def v_signup(request: Request):
+    return templates.TemplateResponse("signup.html", {"request": request})
 
-@app.post("/loginuser")
-async def read_root(request: Request,username:str=Form(...),password:str=Form(...)):
-    print(username,password)
-    return RedirectResponse(url=f"/events?message=you are logged in succesfully",status_code=status.HTTP_302_FOUND,headers={"Set-Cookie":f"token={username};"})
+
+@app.get("/login")
+def v_login(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+@app.post("/signup")
+async def signup(request: Request):
+    data = await request.json()
+
+    if data['type'] == 'organiser':
+        user = Organiser_l(**data)
+    elif data['type'] == 'student':
+        user = Student_l(**data)
+    elif data['type'] == 'outsider':
+        user = Outsider_l(**data)
+    else:
+        return {"error": "Invalid user type"}
+
+    # Store user data (you'll likely use a database here)
+    print("User Data:", user)
+
+    return {"message": "Signup successful"}
+
+@app.post("/login")
+async def login(user: User_l):
+    if user.username in user_database:
+        stored_user = user_database[user.username]
+        if stored_user["password"] == user.password:
+            return {"message": "Login successful!"}
+
+    raise HTTPException(status_code=401, detail="Invalid username or password")
+
+# @app.get("/login")
+# async def read_root(request: Request,message: str = None):
+#     print(message)
+#     print(request.headers.get("message"))
+#     if request.headers.get("message"):
+#         message = request.headers.get("message")
+#     return templates.TemplateResponse("login.html", {"request": request,"page":"login"})
+
+# @app.post("/loginuser")
+# async def read_root(request: Request,username:str=Form(...),password:str=Form(...)):
+#     print(username,password)
+#     return RedirectResponse(url=f"/events?message=you are logged in succesfully",status_code=status.HTTP_302_FOUND,headers={"Set-Cookie":f"token={username};"})
 
 @app.get("/admin")
 async def read_root(request: Request):
