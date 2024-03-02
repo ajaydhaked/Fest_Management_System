@@ -1,14 +1,5 @@
 from header import *
 
-
-user_database = {
-    "swadhin": {
-        "username": "swadhin",
-        "password": "swadhin"
-    }
-}
-
-
 @app.get("/")
 async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request, "page": "home"})
@@ -32,7 +23,12 @@ async def read_root(request: Request,message: str = None):
 
 @app.get("/signup")
 def v_signup(request: Request,message: str = None):
-    return templates.TemplateResponse("signup.html", {"request": request,"message":message})
+    cur = conn.cursor()
+    cur.execute("SELECT college_name FROM A4_college")
+    colleges = cur.fetchall()
+    for i in range(len(colleges)):
+        colleges[i] = colleges[i][0]
+    return templates.TemplateResponse("signup.html", {"request": request,"message":message,"colleges":colleges})
 
 
 @app.get("/login")
@@ -48,13 +44,15 @@ def v_login(request: Request,message: str = None):
 @app.post("/signup")
 async def signup(request: Request,message: str = None):
     data = await request.json()
-
     if data['type'] == 'organiser':
         user = Organiser_l(**data)
+        register_organizer(user.name,user.roll_no,user.username,user.password,False,user.enrollment_key)
     elif data['type'] == 'student':
         user = Student_l(**data)
+        register_student(user.name,user.roll_no,user.username,user.password,True)
     elif data['type'] == 'outsider':
         user = Outsider_l(**data)
+        register_outsider(user.name,user.username,user.password,user.college)
     else:
         return {"error": "Invalid user type"}
 
@@ -71,15 +69,6 @@ async def login(user: User_l):
             return {"token": token, "message": "Login successful"}
     raise HTTPException(status_code=401, detail="Invalid username or password")
 
-# @app.post("/student", status_code=status.HTTP_201_CREATED)
-# async def new_student(student: Student):
-#     cur = conn.cursor()
-#     cur.execute(
-#         f"INSERT INTO A4_student (name,username,roll_number,password,onlystudent) VALUES ('{student.name}', '{student.username}','{student.rollno}','{student.password}','{student.only_student}')")
-#     cur.close()
-#     conn.commit()
-#     conn.close()
-#     return
 
 @app.get("/admin")
 async def read_root(request: Request):
@@ -99,3 +88,43 @@ async def read_root(request: Request):
         tables[i]=(tables[i][0],temp1,temp2)
     return templates.TemplateResponse("/admin/admin.html", {"request": request,"tables":tables,"page":"admin"})
 
+
+@app.post("/register_outsider_for_event",status_code=status.HTTP_201_CREATED)
+async def read_root(request=Request,event_id=int, username=str):
+    register_outsider_for_event(event_id, username)
+    
+@app.get("/fetch_event_details",status_code=status.HTTP_200_OK)
+async def read_root():
+    fetch_event_details()
+    
+@app.post("/register_student_for_event",status_code=status.HTTP_201_CREATED)
+async def read_root(request=Request,event_id=int, username=str):
+    register_student_for_event(event_id, username)
+    
+@app.post("/allow_student_to_volunteer",status_code=status.HTTP_201_CREATED)
+async def read_root(request=Request,event_id=int, username=str):
+    allow_student_to_volunteer(event_id, username)
+    
+@app.get("/view_participants_for_event",status_code=status.HTTP_200_OK)
+async def read_root(request=Request,desired_event_id=int):
+    view_participants_for_event(desired_event_id)
+    
+@app.get("/view_volunteers_for_event",status_code=status.HTTP_200_OK)
+async def read_root(request=Request,desired_event_id=int):
+    view_volunteers_for_event(desired_event_id)
+    
+@app.post("/change_event_details",status_code=status.HTTP_201_CREATED)
+async def read_root(request=Request,desired_event_id=int, new_event_name=str, new_event_type=str, new_event_description=str):
+    change_event_details(desired_event_id, new_event_name, new_event_type, new_event_description)
+    
+@app.get("/check_username_in_student_table",status_code=status.HTTP_200_OK)
+async def read_root(request=Request,username=str):
+    check_username_in_student_table(username)
+    
+@app.get("/check_username_in_outsider_table",status_code=status.HTTP_200_OK)
+async def read_root(request=Request,username=str):
+    check_username_in_outsider_table(username)
+    
+@app.get("/check_username_in_organizer_to_student_table",status_code=status.HTTP_200_OK)
+async def read_root(request=Request,username=str):
+    check_username_in_organizer_to_student_table(username)

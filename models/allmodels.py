@@ -25,7 +25,7 @@ class Event(BaseModel):
     description: str
 
 class Organiser_l(BaseModel):
-    unsername: str
+    username: str
     name: str
     password: str
     verified_password: str

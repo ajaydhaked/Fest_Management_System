@@ -11,6 +11,7 @@ from database.connect import conn
 from typing import List
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from psycopg2 import Error
 from models.modelfunction import *
 app = FastAPI()
 app.add_middleware(
@@ -22,3 +23,10 @@ app.add_middleware(
 )
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
+
+user_database = {
+    "swadhin": {
+        "username": "swadhin",
+        "password": "swadhin"
+    }
+}

@@ -5,7 +5,7 @@
 {% block navbar %}
 {% endblock %} 
 {% block content %} 
-  <div class="container">
+  <div class="container-sm">
         <h1>Signup Form</h1>
 
         <form id="signup-form">
@@ -39,9 +39,6 @@
                 <label for="roll-no">Roll No:</label>
                 <input type="text" id="roll-no" >
 
-                <label for="roll-name">Roll Name:</label>
-                <input type="text" id="roll-name" >
-
                 <label for="enrollment-key">Enrollment Key:</label>
                 <input type="text" id="enrollment-key" >
             </div>
@@ -52,14 +49,17 @@
             </div>
 
             <div id="outsider-fields" class="extra-fields" style="display: none;">
-                <label for="college">College:</label>
-                <input type="text" id="college">
-
-                <label for="outsider-roll-no">Roll No:</label>
-                <input type="text" id="outsider-roll-no">
-
-                <label for="branch">Branch:</label>
-                <input type="text" id="branch" >
+                
+                <div class="form-group ">
+                    <label for="college">College</label>
+                    <select class="form-control" id="college" >
+                        <option value="" disabled selected>Select your College</option>
+                        {% for college in colleges %}
+                            <option value="{{college}}">{{college}}</option>
+                        {% endfor %}
+                    </select>
+                  </div>
+                
             </div>
 
             <button type="submit">Sign Up</button>
@@ -102,17 +102,14 @@
       radioButtons.forEach(button => {
           button.addEventListener('change', toggleExtraFields);
       });
-
       
       signupForm.addEventListener('submit', function(event) {
           // ... other validation you might have ...
 
 
         const selectedType = document.querySelector('input[name="type"]:checked').value;
-
         if (selectedType === 'organiser') {
             if (document.getElementById('roll-no').value === '' ||
-                document.getElementById('roll-name').value === '' ||
                 document.getElementById('enrollment-key').value === '') {
                 event.preventDefault();
                 alert('Please fill all required fields for Organiser');
@@ -123,9 +120,7 @@
                 alert('Please fill all required fields for Student');
             }
         } else if (selectedType === 'outsider') {
-            if (document.getElementById('college').value === '' ||
-                document.getElementById('outsider-roll-no').value === '' ||
-                document.getElementById('branch').value === '') {
+            if (document.getElementById('college').value === '' ) {
                 event.preventDefault();
                 alert('Please fill all required fields for Outsider');
             }
@@ -133,14 +128,15 @@
     });
 
       signupForm.addEventListener('submit', async function(event) {
-      event.preventDefault();
-
-        // Collect form data (You'll need to adjust selectors or create a helper function)
+        event.preventDefault();
+        if (document.getElementById('password').value !== document.getElementById('verify-password').value) {
+            alert('Passwords do not match');
+            return;
+        }
         const formData = {
             username: document.getElementById('username').value,
             name: document.getElementById('name').value,
             password: document.getElementById('password').value,
-            verified_password: document.getElementById('verify-password').value,
             type: document.querySelector('input[name="type"]:checked').value
       };
 
@@ -153,8 +149,6 @@
           formData.roll_no = document.getElementById('student-roll-no').value;
       } else if (selectedType === 'outsider') {
           formData.college = document.getElementById('college').value;
-          formData.roll_no = document.getElementById('outsider-roll-no').value;
-          formData.branch = document.getElementById('branch').value;
       }
       console.log(formData);
       // Send POST request

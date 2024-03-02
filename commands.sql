@@ -73,3 +73,26 @@ CREATE TABLE A4_Student_Volunteer_Event (
 
 -- for inserting data into the table events
 a4_event(name,date,type,description) VALUES('Megaevent',date '2020-12-12','Cultural','Megaevent is a cultural event with highteck facilities');
+
+INSERT INTO A4_College (college_id, college_name) VALUES
+(1, 'Indian Institute of Technology (IIT) Bombay'),
+(2, 'Indian Institute of Technology (IIT) Delhi'),
+(3, 'Indian Institute of Technology (IIT) Kanpur'),
+(4, 'Indian Institute of Technology (IIT) Madras'),
+(5, 'Indian Institute of Technology (IIT) Kharagpur'),
+(6, 'Indian Institute of Technology (IIT) Roorkee'),
+(7, 'Indian Institute of Technology (IIT) Guwahati'),
+(8, 'Indian Institute of Technology (IIT) Hyderabad'),
+(9, 'Indian Institute of Technology (IIT) Ropar'),
+(10, 'Indian Institute of Technology (IIT) Gandhinagar');
+
+
+INSERT INTO A4_Organizer_Role (organizer_id, enrollment_key, role, description) VALUES \
+(1, 123, 'Admin', 'Administrator role'),
+(2, 456, 'Editor', 'Editor role'),
+(3, 789, 'Viewer', 'Viewer role'),
+(4, 321, 'Moderator', 'Moderator role'),
+(5, 654, 'Author', 'Author role'),
+(6, 987, 'Contributor', 'Contributor role'),
+(7, 659, 'Subscriber', 'Subscriber role'),
+(8, 322, 'Guest', 'Guest role');
