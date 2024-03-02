@@ -8,6 +8,14 @@ class Student(BaseModel):
     password: str
     only_student: int
 
+class frontenduser(BaseModel):
+    is_logged_in: int
+    username: str
+    is_organiser: int
+    is_student: int
+    is_outsider: int
+    participate_events: list
+    voluteer_events: list
 
 class Event(BaseModel):
     event_id: int = None
@@ -16,8 +24,8 @@ class Event(BaseModel):
     type: str
     description: str
 
-
 class Organiser_l(BaseModel):
+    unsername: str
     name: str
     password: str
     verified_password: str
@@ -25,18 +33,16 @@ class Organiser_l(BaseModel):
     roll_name: str
     enrollment_key: str
 
-
 class Student_l(BaseModel):
+    username: str
     name: str
     password: str
-    verified_password: str
     roll_no: str
 
-
 class Outsider_l(BaseModel):
+    username: str
     name: str
     password: str
-    verified_password: str
     college: str
     roll_no: str
     branch: str
