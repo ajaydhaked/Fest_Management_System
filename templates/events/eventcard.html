@@ -1,0 +1,12 @@
+
+  <div class="card my-3 " style="width: 18rem">
+      <img src="/static/events/tech.png" class="card-img-top" alt="...">
+      <div class="card-body">
+        <h5 class="card-title">{{event.name}}</h5>
+        <p class="card-text">{{event.description}}</p>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#event{{event.event_id}}">
+          View More
+        </button>
+        {% include '/events/eventmodal.html' %}
+      </div>
+  </div>
