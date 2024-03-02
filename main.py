@@ -12,7 +12,6 @@ from typing import List
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from auth.userauth import *
-from routes.admin import *
 
 app = FastAPI()
 app.add_middleware(
@@ -39,17 +38,16 @@ async def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request,"page":"home"})
 
 @app.get("/events")
-async def read_root(request: Request):
-    if(request.cookies.get("username") is None):
+async def read_root(request: Request,message: str = None):
+    if(request.cookies.get("token") is None):
         return RedirectResponse(url="/login?message=please login to see events page",status_code=status.HTTP_302_FOUND)
-    
     cur = conn.cursor()
     cur.execute("SELECT * FROM A4_event")
     events = cur.fetchall()
     cur.close()
     for i in range(len(events)):
         events[i] = Event(event_id=events[i][0],name=events[i][1],date=events[i][2].strftime("%d-%m-%Y"),type=events[i][3],description=events[i][4])
-    return templates.TemplateResponse("/events/events.html", {"request": request, "events": events,"page":"events"})
+    return templates.TemplateResponse("/events/events.html", {"request": request, "events": events,"message":message,"page":"events"})
 
 @app.get("/about")
 async def read_root(request: Request):
@@ -61,15 +59,18 @@ async def read_root(request: Request,message: str = None):
     print(request.headers.get("message"))
     if request.headers.get("message"):
         message = request.headers.get("message")
-    return templates.TemplateResponse("login.html", {"request": request,"page":"login","message":message})
+    return templates.TemplateResponse("login.html", {"request": request,"page":"login"})
 
 @app.post("/loginuser")
 async def read_root(request: Request,username:str=Form(...),password:str=Form(...)):
     print(username,password)
-    return RedirectResponse(url="/events",status_code=status.HTTP_302_FOUND,headers={"Set-Cookie":f"token={username};"})
+    return RedirectResponse(url=f"/events?message=you are logged in succesfully",status_code=status.HTTP_302_FOUND,headers={"Set-Cookie":f"token={username};"})
 
 @app.get("/admin")
 async def read_root(request: Request):
+    token = request.cookies.get("token")
+    # if(not await is_current_user_admin(token)):
+    #     return RedirectResponse(url="/login?message=You are not an admin",status_code=status.HTTP_302_FOUND)
     cur = conn.cursor()
     # get all table names
     cur.execute("SELECT table_name FROM information_schema.tables WHERE table_schema='public'")
@@ -83,3 +84,4 @@ async def read_root(request: Request):
         temp2 = cur.fetchall()
         tables[i]=(tables[i][0],temp1,temp2)
     return templates.TemplateResponse("/admin/admin.html", {"request": request,"tables":tables,"page":"admin"})
+

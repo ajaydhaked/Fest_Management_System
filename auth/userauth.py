@@ -9,8 +9,6 @@ from typing import List
 from pydantic import BaseModel
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-
-
 async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     cur = conn.cursor()
     cur.execute(f"SELECT * FROM A4_student WHERE username='{token}'")
@@ -21,4 +19,12 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     user = Student(user[0],user[1],user[2],user[3],user[4],user[5],user[6],user[7])
     return user
 
+async def get_current_active_user(token):
+    cur = conn.cursor()
+    cur.execute(f"SELECT * FROM A4_student WHERE username='{token}'")
+    tem1 = cur.fetchone()
+    if temp1 is None:
+        return None
+    temp1 = temp1[4]
+    cur.execute(f"SELECT * FROM")
     
