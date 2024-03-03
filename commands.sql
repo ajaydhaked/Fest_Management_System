@@ -26,7 +26,7 @@ CREATE TABLE A4_Outsider (
 CREATE TABLE A4_outsider_accomodation (
     username VARCHAR(255),
     accomodation_place VARCHAR(255),
-    MerchTaken BOOLEAN,
+    MerchTaken INT,
     FOREIGN KEY (username) REFERENCES A4_Outsider(username)
 );
 

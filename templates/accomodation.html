@@ -6,7 +6,7 @@
     <div class="col-12">
         <h1 class="text-center">Accomodation</h1>
     </div>
-  </div>        
+  </div>
   <div class="row">
       <div class="col-md-8 offset-md-2">
           <div class="card">
@@ -25,6 +25,9 @@
   </div>
   <div class="card-body text-center">
     <h5 class="card-title">Hall Allocated : {{hallname}}</h5>
+    {% if hallname == none %}
+        <p>Kindly contact us as your Hall is not Allocated</p>
+    {% endif %}
   </div>
   
 </div>

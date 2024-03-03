@@ -17,6 +17,15 @@ class frontenduser(BaseModel):
     participate_events: list
     volunteer_events: list
 
+class profile(BaseModel):
+    name: str
+    username: str
+    rollno: str
+    collegename: str
+    merchtaken: int
+    rolename: str
+    roledesc: str
+
 class Event(BaseModel):
     event_id: int = None
     name: str

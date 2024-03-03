@@ -24,6 +24,31 @@ def read_root(request: Request,message: str = None):
     hallname = gethallname(user.username)
     return templates.TemplateResponse("accomodation.html", {"request": request,"message":message, "page": "accomodation","user":user,"hallname":hallname})
 
+@app.get("/profile")
+def read_root(request: Request,message: str = None):
+    user= getfrontenduser(request.cookies.get("token"))
+    if(user.is_logged_in == 0):
+        return RedirectResponse("/events?message=Please login to see this page",status_code=302)
+    if(user.is_student == 1):
+        temp= getstudentdetails(user.username)
+    elif user.is_organiser == 1:
+        temp = getorganiserdetails(user.username)
+    elif user.is_outsider == 1:
+        temp = getoutsiderdetails(user.username)
+    return templates.TemplateResponse("profile.html", {"request": request,"message":message, "page": "profile","user":user,"profile":temp})
+
+@app.get("/participants")
+def read_root(request: Request,message: str = None):
+    user= getfrontenduser(request.cookies.get("token"))
+    if(user.is_logged_in == 0):
+        return RedirectResponse("/events?message=Please login to see this page",status_code=302)
+    if(user.is_organiser == 0):
+        return RedirectResponse("/events?message=You are not authorized to view this page",status_code=302)
+    students = getallstudents()
+    outsiders = getalloutsiders()
+    organisers = getallorganisers()
+    return templates.TemplateResponse("/admin/participants.html", {"request": request,"message":message, "page": "participants","user":user,"students":students,"outsiders":outsiders,"organisers":organisers})
+
 @app.get("/signup")
 def v_signup(request: Request,message: str = None):
     user= getfrontenduser(request.cookies.get("token"))
@@ -45,6 +70,28 @@ def v_login(request: Request,message: str = None):
     else:
         print("message is none")
     return templates.TemplateResponse("login.html", {"request": request,"message":message,"user":user})
+
+@app.post("/deleteuser/{username}")
+async def deleteuser(request: Request,username:str):
+    user= getfrontenduser(request.cookies.get("token"))
+    if(user.is_organiser == 0):
+        return {"message": "You are not authorized to delete", "status": 0}
+    data = await request.json()
+    temp = data['type']
+    if temp == 1:
+        print("deleting student")
+        # delete_a_student(username)
+        return {"message": "Deleted successfully", "status": 1}
+    elif temp == 2:
+        print("deleting outsider")
+        # delete_a_outsider(username)
+        return {"message": "Deleted successfully", "status": 1}
+    elif temp == 3:
+        print("deleting organiser")
+        # delete_a_organiser(username)
+        return {"message": "Deleted successfully", "status": 1}
+    
+    return {"message": "Unable to delete", "status": 0}
 
 @app.post("/signup")
 async def signup(request: Request):

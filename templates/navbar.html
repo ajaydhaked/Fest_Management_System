@@ -22,11 +22,19 @@
                 <a class="nav-link" href="/accomodation">Accomodation</a>
               </li>
             {% endif %}
+            {% if user.is_organiser==1 %}
+              <li class="nav-item">
+                <a class="nav-link" href="/admin">Show Database</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/participants">Participants</a>
+              </li>
+            {% endif %}
           {% endif %}
         </ul
         <div class="d-flex" role="search">
           {% if user.is_logged_in %}
-            <a class="navbar-brand">{{ user.username }}</a>
+            <a href="/profile" class="navbar-brand">{{ user.username }}</a>
             <button class="btn btn-dark mx-1" id="logout">Log Out</button>
           {% else %}
             <a href="/login" class="btn btn-outline-dark" >Login</a>

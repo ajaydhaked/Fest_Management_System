@@ -427,10 +427,12 @@ def allocate_outsider_to_hall(username):
         # count of users in outsider table
         query = "SELECT COUNT(*) FROM A4_Outsider;"
         cursor.execute(query)
-        count = cursor.fetchone()[0]
+        count = cursor.fetchone()
+        count = int(count[0])
         hall_id = count/3 + 1
+        hall_id = int(hall_id)
         # get hall name
-        query = f"SELECT hall_name FROM A4_Hall WHERE hall_id = {hall_id};"
+        query = f"SELECT hall_name FROM A4_Halls WHERE hall_id = {hall_id};"
         cursor.execute(query)
         hall_name = cursor.fetchone()[0]
         # allocate hall to user
@@ -446,9 +448,158 @@ def gethallname(username):
         cursor = conn.cursor()
         query = f"SELECT accomodation_place FROM A4_outsider_accomodation WHERE username = '{username}';"
         cursor.execute(query)
-        result = cursor.fetchone()[0]
+        result = cursor.fetchone()
+        if(result != None):
+            return result[0]
         cursor.close()
         return result
     except Error as e:
         print(f"Error executing query: {e}")
         return None
+    
+def getstudentdetails(username):
+    try:
+        cursor = conn.cursor()
+        query = f"SELECT * FROM A4_Student WHERE username = '{username}';"
+        cursor.execute(query)
+        result = cursor.fetchone()
+        temp = profile(name=result[0], username=result[1], rollno=result[2], collegename="IIT Kharagpur", merchtaken=0, rolename="", roledesc="")
+        cursor.close()
+        return temp
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return profile()
+    
+def getorganiserdetails(username):
+    try:
+        cursor = conn.cursor()
+        query = f"SELECT * FROM A4_Student WHERE username = '{username}';"
+        cursor.execute(query)
+        result = cursor.fetchone()
+        temp = profile(name=result[0], username=result[1], rollno=result[2], collegename="IIT Kharagpur", merchtaken=0, rolename="", roledesc="")
+        query = f"SELECT organizer_id FROM A4_Organizer_to_Student WHERE username = '{username}';"
+        cursor.execute(query)
+        organiser_id = cursor.fetchone()[0]
+        query = f"SELECT role,description FROM A4_Organizer_Role WHERE organizer_id = {organiser_id};"
+        cursor.execute(query)
+        result = cursor.fetchone()
+        temp.rolename = result[0]
+        temp.roledesc = result[1]
+        cursor.close()
+        return temp
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return profile()
+    
+def getoutsiderdetails(username):
+    try:
+        cursor = conn.cursor()
+        query = f"SELECT * FROM A4_Outsider WHERE username = '{username}';"
+        cursor.execute(query)
+        result = cursor.fetchone()
+        temp = profile(name=result[0], username=result[1], rollno="", collegename="", merchtaken=0, rolename="", roledesc="")
+        college_id = result[3]
+        query = f"SELECT college_name FROM A4_College WHERE college_id = {college_id};"
+        cursor.execute(query)
+        temp.collegename = cursor.fetchone()[0]
+        cursor.close()
+        return temp
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return profile()
+    
+def getallstudents():
+    try:
+        cursor = conn.cursor()
+        query = "SELECT username FROM A4_Student WHERE onlyStudent = True;"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        students = []
+        for i in range(len(result)):
+            students.append(result[i][0])
+        cursor.close()
+        return students
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return []
+
+def getallorganisers():
+    try:
+        cursor = conn.cursor()
+        query = "SELECT username FROM A4_Organizer_to_Student;"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        organisers = []
+        for i in range(len(result)):
+            organisers.append(result[i][0])
+        cursor.close()
+        return organisers
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return []
+    
+def getalloutsiders():
+    try:
+        cursor = conn.cursor()
+        query = "SELECT username FROM A4_Outsider;"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        outsiders = []
+        for i in range(len(result)):
+            outsiders.append(result[i][0])
+        cursor.close()
+        return outsiders
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return []
+    
+    
+    
+def delete_a_student(username):
+    try:
+        cursor = conn.cursor()
+        # WE NEED TO DELETE THE STUDENT INSTANCE FROM ALL TABLES
+        # query = f"DELETE FROM A4_Student_Winner_Event WHERE username = '{username}';"
+        # cursor.execute(query)
+        query = f"DELETE FROM A4_Student_Participate_Event WHERE username = '{username}';"
+        cursor.execute(query)
+        query = f"DELETE FROM A4_Student_Volunteer_Event WHERE username = '{username}';"
+        cursor.execute(query)
+        query = f"DELETE FROM A4_Student WHERE username = '{username}';"
+        cursor.execute(query)
+        conn.commit()
+        cursor.close()
+    except Error as e:
+        print(f"Error executing query: {e}")
+
+
+def delete_a_organiser(username):
+    try:
+        cursor = conn.cursor()
+        # WE NEED TO DELETE THE STUDENT INSTANCE FROM ALL TABLES
+        query = f"DELETE FROM A4_Organizer_to_Student WHERE username = '{username}';"
+        cursor.execute(query)
+        query = f"DELETE FROM A4_Student WHERE username = '{username}';"
+        cursor.execute(query)
+        conn.commit()
+        cursor.close()
+    except Error as e:
+        print(f"Error executing query: {e}")
+
+
+def delete_a_outsider(username):
+    try:
+        cursor = conn.cursor()
+        # WE NEED TO DELETE THE STUDENT INSTANCE FROM ALL TABLES
+        # query = f"DELETE FROM A4_Outsider_Winner_Event WHERE username = '{username}';"
+        # cursor.execute(query)
+        # query = f"DELETE FROM A4_Outsider_Accomodation WHERE username = '{username}';"
+        # cursor.execute(query)
+        query = f"DELETE FROM A4_Outsider_Participate_Event WHERE username = '{username}';"
+        cursor.execute(query)
+        query = f"DELETE FROM A4_Outsider WHERE username = '{username}';"
+        cursor.execute(query)
+        conn.commit()
+        cursor.close()
+    except Error as e:
+        print(f"Error executing query: {e}")
