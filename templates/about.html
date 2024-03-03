@@ -1,12 +1,42 @@
 {% extends "index.html" %}
 {% block css%}{% endblock %}
-{% block footer%}{% endblock %}
 {% block content %}
 <div class="row">
   <div class="col-12">
       <h1 class="text-center">About Page</h1>
   </div>
 </div>
+<div class="container mt-5">
+  <div class="row">
+      <div class="col-lg-8 offset-lg-2">
+          <p>Welcome to Tech Fest, the ultimate celebration of technology, innovation, and creativity!</p>
+          <p>Our mission is to bring together tech enthusiasts, professionals, and students from around the
+              globe to exchange ideas, showcase cutting-edge innovations, and inspire the next generation of
+              innovators.</p>
+          <p>With a diverse range of events, including keynote speeches, workshops, hackathons, and
+              competitions, Tech Fest offers something for everyone passionate about technology.</p>
+          <p>Whether you're a seasoned tech expert or just starting your journey in the world of technology, Tech
+              Fest has something to offer you. Join us as we explore the latest trends, dive into
+              thought-provoking discussions, and push the boundaries of what's possible with technology.</p>
+          <p>We look forward to welcoming you to Tech Fest and sharing an unforgettable experience filled with
+              innovation, inspiration, and excitement!</p>
+      </div>
+  </div>
+</div>
+{% endblock %}
+{% block footer%}
+<footer class="bg-dark text-white mt-5" style="position: absolute;bottom: 0;width: 100%;">
+  <div class="container py-4">
+      <div class="row">
+          <div class="col-lg-6">
+              <p>&copy; 2024 Tech Fest. All Rights Reserved.</p>
+          </div>
+          <div class="col-lg-6 text-right">
+              <p>Contact: info@techfest.com</p>
+          </div>
+      </div>
+  </div>
+</footer>
 {% endblock %}
 
 <!-- <img src="/static/image.jpeg" alt="An image" /> -->

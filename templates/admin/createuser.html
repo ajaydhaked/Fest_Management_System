@@ -1,11 +1,8 @@
-{% extends "index.html" %} 
-{% block css %}
-<link rel="stylesheet" type="text/css" href="/static/styles2.css" />
-{% endblock %}
+{% extends "index.html" %}
+{% block css%}{% endblock %}
 {% block footer%}{% endblock %}
-
 {% block content %}
-  <h1>Signup Form</h1>
+  <h1>Create User</h1>
   <form id="signup-form">
     <div class="form-section">
       <label for="username">Username:</label>
@@ -102,9 +99,6 @@
   }
   
   function simpleMD5(message) {
-    // This is not a secure hashing algorithm and should not be used for real-world purposes.
-    // It's only provided for educational demonstration.
-  
     let hash = 0;
     for (let i = 0; i < message.length; i++) {
       const charCode = message.charCodeAt(i);
@@ -113,8 +107,6 @@
     }
     return hash.toString(16); // Convert to hexadecimal string
   }
-  
-  // Add event listeners to radio buttons
   radioButtons.forEach((button) => {
     button.addEventListener("change", toggleExtraFields);
   });

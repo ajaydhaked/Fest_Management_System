@@ -41,5 +41,24 @@
       </ul>
     </div>
   </div>
+  <div class="row">
+    <div class="col-md-3 mx-3 my-4 border rounded py-2 ">
+        {% if event.winner_declared==0 %}
+        <strong>Winners not yet Declared</strong>
+        {% endif %} {% if event.winner_declared==1 %}
+        <div class="mx-3 border rounded py-2">
+          <h5 class="text-center">Winners</h5>
+          <ul class="list-group">
+            {% for st in event.winners %}
+            <li class="list-group-item text-center d-flex justify-content-between">
+              <p>{{st[0]}}</p>
+              <p>{{st[1]}}</p>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+  </div>
 </div>
 {% endblock %}

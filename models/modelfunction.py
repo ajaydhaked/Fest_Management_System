@@ -592,9 +592,8 @@ def getalloutsiders():
 def delete_a_student(username):
     try:
         cursor = conn.cursor()
-        # WE NEED TO DELETE THE STUDENT INSTANCE FROM ALL TABLES
-        # query = f"DELETE FROM A4_Student_Winner_Event WHERE username = '{username}';"
-        # cursor.execute(query)
+        query = f"DELETE FROM A4_winners_student WHERE username = '{username}';"
+        cursor.execute(query)
         query = f"DELETE FROM A4_Student_Participate_Event WHERE username = '{username}';"
         cursor.execute(query)
         query = f"DELETE FROM A4_Student_Volunteer_Event WHERE username = '{username}';"
@@ -624,11 +623,10 @@ def delete_a_organiser(username):
 def delete_a_outsider(username):
     try:
         cursor = conn.cursor()
-        # WE NEED TO DELETE THE STUDENT INSTANCE FROM ALL TABLES
-        # query = f"DELETE FROM A4_Outsider_Winner_Event WHERE username = '{username}';"
-        # cursor.execute(query)
-        # query = f"DELETE FROM A4_Outsider_Accomodation WHERE username = '{username}';"
-        # cursor.execute(query)
+        query = f"DELETE FROM A4_winners_outsider WHERE username = '{username}';"
+        cursor.execute(query)
+        query = f"DELETE FROM A4_outsider_accomodation WHERE username = '{username}';"
+        cursor.execute(query)
         query = f"DELETE FROM A4_Outsider_Participate_Event WHERE username = '{username}';"
         cursor.execute(query)
         query = f"DELETE FROM A4_Outsider WHERE username = '{username}';"

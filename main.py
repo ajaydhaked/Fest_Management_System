@@ -80,15 +80,15 @@ async def deleteuser(request: Request,username:str):
     temp = data['type']
     if temp == 1:
         print("deleting student")
-        # delete_a_student(username)
+        delete_a_student(username)
         return {"message": "Deleted successfully", "status": 1}
     elif temp == 2:
         print("deleting outsider")
-        # delete_a_outsider(username)
+        delete_a_outsider(username)
         return {"message": "Deleted successfully", "status": 1}
     elif temp == 3:
         print("deleting organiser")
-        # delete_a_organiser(username)
+        delete_a_organiser(username)
         return {"message": "Deleted successfully", "status": 1}
     
     return {"message": "Unable to delete", "status": 0}
