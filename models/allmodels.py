@@ -32,6 +32,8 @@ class Event(BaseModel):
     date: str
     type: str
     description: str
+    winner_declared: int
+    winners: list
 
 class Organiser_l(BaseModel):
     username: str

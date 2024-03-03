@@ -61,6 +61,23 @@ CREATE TABLE A4_Organizer_to_Student (
     FOREIGN KEY (username) REFERENCES A4_Student(username)
 );
 
+-- Create A4_winners_student table
+CREATE TABLE A4_winners_student (
+    event_id INT,
+    username VARCHAR(255),
+    rank INT,
+    FOREIGN KEY (event_id) REFERENCES A4_Event(event_id),
+    FOREIGN KEY (username) REFERENCES A4_Student(username)
+);
+
+-- Create A4_winners_outsider table
+CREATE TABLE A4_winners_outsider (
+    event_id INT,
+    username VARCHAR(255),
+    rank INT,
+    FOREIGN KEY (event_id) REFERENCES A4_Event(event_id),
+    FOREIGN KEY (username) REFERENCES A4_Outsider(username)
+);
 -- Create A4_Student_Participate_Event table
 CREATE TABLE A4_Student_Participate_Event (
     event_id INT,
@@ -149,3 +166,12 @@ INSERT INTO A4_Halls (hall_id, hall_name) VALUES
 -- insert into A4_outsider_accomodation
 INSERT INTO A4_outsider_accomodation (username, accomodation_place, MerchTaken) VALUES
 ('outsider', 'Hall 1', TRUE);
+
+
+-- insert into A4_winners_student
+INSERT INTO A4_winners_student (event_id, username, rank) VALUES
+(1, 'ajay123', 1);
+
+-- insert into A4_winners_outsider
+INSERT INTO A4_winners_outsider (event_id, username, rank) VALUES
+(1, 'outsider', 2);

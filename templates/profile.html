@@ -19,7 +19,7 @@
                         <p class="card-text"><strong>Merch Taken: </strong>{% if profile.merchtaken==0 %}No!(<em>kindly take your merch</em>){% else %}Yes{% endif %}</p>
                     {% endif %}
                     {% if user.is_outsider==0 %}
-                        <p class="card-text"><strong>Roll Number: </strong>{{ user.roll_number }}</p>
+                        <p class="card-text"><strong>Roll Number: </strong>{{ profile.rollno }}</p>
                     {% endif %}
                     {% if user.is_organiser %}
                         <p class="card-text"><strong>Role: </strong>{{profile.rolename}}</p>

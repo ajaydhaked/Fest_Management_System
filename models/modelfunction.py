@@ -358,7 +358,11 @@ def getalleventstable():
         result = cursor.fetchall()
         events = []
         for i in range(len(result)):
-            events.append(Event(event_id=result[i][0], name=result[i][1], date=result[i][2].strftime("%d-%m-%Y"), type=result[i][3], description=result[i][4]))
+            temp = geteventwinners(result[i][0])
+            windecl=0
+            if len(temp)>0:
+                windecl=1
+            events.append(Event(event_id=result[i][0], name=result[i][1], date=result[i][2].strftime("%d-%m-%Y"), type=result[i][3], description=result[i][4],winner_declared=windecl, winners=temp))
         cursor.close()
         return events
     except Error as e:
@@ -414,12 +418,42 @@ def geteventdetails(event_id):
         query = f"SELECT * FROM A4_Event WHERE event_id = {event_id};"
         cursor.execute(query)
         result = cursor.fetchall()
-        event = Event(event_id=result[0][0], name=result[0][1], date=result[0][2].strftime("%d-%m-%Y"), type=result[0][3], description=result[0][4])
+        eventwinr=geteventwinners(event_id)
+        windecl=0
+        if len(eventwinr)>0:
+            windecl=1
+        event = Event(event_id=result[0][0], name=result[0][1], date=result[0][2].strftime("%d-%m-%Y"), type=result[0][3], description=result[0][4], winner_declared=windecl, winners=eventwinr)
         cursor.close()
         return event
     except Error as e:
         print(f"Error executing query: {e}")
         return Event()
+    
+def geteventwinners(event_id):
+    try:
+        cursor = conn.cursor()
+        query = f"SELECT username, rank FROM A4_winners_student WHERE event_id = {event_id};"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        students = []
+        for i in range(len(result)):
+            students.append([result[i][0], result[i][1]])
+        query = f"SELECT username, rank FROM A4_winners_outsider WHERE event_id = {event_id};"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        for i in range(len(result)):
+            students.append([result[i][0],result[i][1]])
+        cursor.close()
+        # sort according to rank
+        if len(students) == 0:
+            return students
+        students.sort(key = lambda x: x[1])
+        for i in range(len(students)):
+            students[i][1] = i+1
+        return students
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return [], []
     
 def allocate_outsider_to_hall(username):
     try:
@@ -473,7 +507,7 @@ def getstudentdetails(username):
 def getorganiserdetails(username):
     try:
         cursor = conn.cursor()
-        query = f"SELECT * FROM A4_Student WHERE username = '{username}';"
+        query = f"SELECT name,username,roll_number FROM A4_Student WHERE username = '{username}';"
         cursor.execute(query)
         result = cursor.fetchone()
         temp = profile(name=result[0], username=result[1], rollno=result[2], collegename="IIT Kharagpur", merchtaken=0, rolename="", roledesc="")

@@ -23,10 +23,3 @@ app.add_middleware(
 )
 app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
-
-user_database = {
-    "swadhin": {
-        "username": "swadhin",
-        "password": "swadhin"
-    }
-}
