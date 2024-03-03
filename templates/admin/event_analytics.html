@@ -1,0 +1,42 @@
+{% extends "index.html" %} {% block content %}
+
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-md-8">
+      <h2>{{event.name}}</h2>
+      <p>{{event.description}}</p>
+      <p>Event Type: {{event.type}}</p>
+      <p>Event Date: {{event.date}}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 mx-3 border rounded py-2 "  >
+      <h5 class="text-center">Participants inside IIT KGP</h5>
+      <p class="text-end">Total : {{participants|length}}</p>
+      <ul class="list-group">
+        {% for participant in participants %}
+        <li class="list-group-item text-center">{{participant}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col-md-3 mx-3 border rounded py-2 " >
+      <h5 class="text-center">Participants outside IIT KGP</h5>
+      <p class="text-end">Total : {{outsiders|length}}</p>
+      <ul class="list-group">
+        {% for outsider in outsiders %}
+        <li class="list-group-item text-center">{{outsider}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col-md-3 mx-3 border rounded py-2 " >
+      <h5 class="text-center">Volunteers</h5>
+      <p class="text-end">Total : {{volunteers|length}}</p>
+      <ul class="list-group">
+        {% for volunteer in volunteers %}
+        <li class="list-group-item text-center">{{volunteer}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

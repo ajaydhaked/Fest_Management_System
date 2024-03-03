@@ -17,10 +17,23 @@
             <a class="nav-link" href="http://127.0.0.1:8000/events">Events</a>
           </li>
         </ul>
-        <form class="d-flex" role="search">
-          <a href="http://127.0.0.1:8000/login" class="btn btn-outline-dark" >Login</a>
-          <a href="http://127.0.0.1:8000/signup" class="btn btn-dark mx-1" >Register</a>
-        </form>
+        <div class="d-flex" role="search">
+          {% if user.is_logged_in %}
+            <a class="navbar-brand">{{ user.username }}</a>
+            <button class="btn btn-dark mx-1" id="logout">Log Out</button>
+          {% else %}
+            <a href="http://127.0.0.1:8000/login" class="btn btn-outline-dark" >Login</a>
+            <a href="http://127.0.0.1:8000/signup" class="btn btn-dark mx-1" >Register</a>
+          {% endif %}
+        </div>
       </div>
     </div>
   </nav>
+  <script>
+    {% if user.is_logged_in==1 %}
+    document.getElementById('logout').addEventListener('click', function(){
+      document.cookie = "token=;";
+      window.location.replace("/login");
+    });
+    {% endif %}
+  </script>

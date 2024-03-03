@@ -87,7 +87,7 @@ INSERT INTO A4_College (college_id, college_name) VALUES
 (10, 'Indian Institute of Technology (IIT) Gandhinagar');
 
 
-INSERT INTO A4_Organizer_Role (organizer_id, enrollment_key, role, description) VALUES \
+INSERT INTO A4_Organizer_Role (organizer_id, enrollment_key, role, description) VALUES
 (1, 123, 'Admin', 'Administrator role'),
 (2, 456, 'Editor', 'Editor role'),
 (3, 789, 'Viewer', 'Viewer role'),
@@ -96,3 +96,15 @@ INSERT INTO A4_Organizer_Role (organizer_id, enrollment_key, role, description) 
 (6, 987, 'Contributor', 'Contributor role'),
 (7, 659, 'Subscriber', 'Subscriber role'),
 (8, 322, 'Guest', 'Guest role');
+
+
+INSERT INTO A4_Student_Participate_Event (event_id, username) VALUES
+(1, 'ajay123'),
+(2, 'ajay123'),
+(3, 'ajay123'),
+(6, 'ajay123'),
+(7, 'ajay123');
+
+INSERT INTO A4_Student_Volunteer_Event (event_id, username) VALUES
+(4, 'ajay123'),
+(5, 'ajay123');

@@ -1,176 +1,208 @@
-{% extends "index.html" %}
-{% block css %}
+{% extends "index.html" %} {% block css %}
 <link rel="stylesheet" type="text/css" href="/static/styles2.css" />
-{% endblock %}
-{% block navbar %}
-{% endblock %} 
-{% block content %} 
-  <div class="container-sm">
-        <h1>Signup Form</h1>
+{% endblock %} {% block content %}
+<div class="container-sm">
+  <h1>Signup Form</h1>
+  <form id="signup-form">
+    <div class="form-section">
+      <label for="username">Username:</label>
+      <input type="text" id="username" required />
 
-        <form id="signup-form">
-            <div class="form-section">
-                <label for="username">Username:</label>
-                <input type="text" id="username" required>
-                
-                <label for="name">Name:</label>
-                <input type="text" id="name" required>
+      <label for="name">Name:</label>
+      <input type="text" id="name" required />
 
-                <label for="password">Password:</label>
-                <input type="password" id="password" required>
+      <label for="password">Password:</label>
+      <input type="password" id="password" required />
 
-                <label for="verify-password">Verify Password:</label>
-                <input type="password" id="verify-password" required>
-            </div>
-
-            <div class="slider-section">
-                <label>Select Type:</label>
-                <div class="slider-container">
-                    <input type="radio" name="type" id="organiser" value="organiser" checked>
-                    <label for="organiser">Organiser</label>
-                    <input type="radio" name="type" id="student" value="student">
-                    <label for="student">Student</label>
-                    <input type="radio" name="type" id="outsider" value="outsider">
-                    <label for="outsider">Outsider</label>
-                </div>
-            </div>
-
-            <div id="organiser-fields" class="extra-fields">
-                <label for="roll-no">Roll No:</label>
-                <input type="text" id="roll-no" >
-
-                <label for="enrollment-key">Enrollment Key:</label>
-                <input type="text" id="enrollment-key" >
-            </div>
-
-            <div id="student-fields" class="extra-fields" style="display: none;"> 
-                <label for="student-roll-no">Roll No:</label>
-                <input type="text" id="student-roll-no" >
-            </div>
-
-            <div id="outsider-fields" class="extra-fields" style="display: none;">
-                
-                <div class="form-group ">
-                    <label for="college">College</label>
-                    <select class="form-control" id="college" >
-                        <option value="" disabled selected>Select your College</option>
-                        {% for college in colleges %}
-                            <option value="{{college}}">{{college}}</option>
-                        {% endfor %}
-                    </select>
-                  </div>
-                
-            </div>
-
-            <button type="submit">Sign Up</button>
-        </form>
+      <label for="verify-password">Verify Password:</label>
+      <input type="password" id="verify-password" required />
     </div>
+    <div class="slider-section">
+      <label>Select Type:</label>
+      <div class="slider-container">
+        <input
+          type="radio"
+          name="type"
+          id="organiser"
+          value="organiser"
+          checked
+        />
+        <label for="organiser">Organiser</label>
+        <input type="radio" name="type" id="student" value="student" />
+        <label for="student">Student</label>
+        <input type="radio" name="type" id="outsider" value="outsider" />
+        <label for="outsider">Outsider</label>
+      </div>
+    </div>
+    <div id="organiser-fields" class="extra-fields">
+      <label for="roll-no">Roll No:</label>
+      <input type="text" id="roll-no" />
+
+      <label for="enrollment-key">Enrollment Key:</label>
+      <input type="text" id="enrollment-key" />
+    </div>
+
+    <div id="student-fields" class="extra-fields" style="display: none">
+      <label for="student-roll-no">Roll No:</label>
+      <input type="text" id="student-roll-no" />
+    </div>
+
+    <div id="outsider-fields" class="extra-fields" style="display: none">
+      <div class="form-group my-4">
+        <label for="college">College</label>
+        <select class="form-control" id="college">
+          <option value="" disabled selected>Select your College</option>
+          {% for college in colleges %}
+          <option value="{{college}}">{{college}}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <button class="btn btn-success" id="submitbutton" type="submit">
+      Sign Up
+    </button>
+  </form>
+</div>
+
+{% endblock %} {% block script %}
+<script>
+  const radioButtons = document.querySelectorAll('input[name="type"]');
+  const organiserFields = document.getElementById("organiser-fields");
+  const studentFields = document.getElementById("student-fields");
+  const outsiderFields = document.getElementById("outsider-fields");
+  const signupForm = document.getElementById("signup-form");
+
+  function toggleExtraFields() {
+    organiserFields.style.display = "none";
+    studentFields.style.display = "none";
+    outsiderFields.style.display = "none";
+    const selectedType = document.querySelector(
+      'input[name="type"]:checked'
+    ).value;
+    switch (selectedType) {
+      case "organiser":
+        organiserFields.style.display = "block";
+        break;
+      case "student":
+        studentFields.style.display = "block";
+        break;
+      case "outsider":
+        outsiderFields.style.display = "block";
+        break;
+    }
+  }
+
+  // Initial display state
+  toggleExtraFields();
+  
+  function enablesubmit(){
+    document.getElementById("submitbutton").disabled = false;
+    document.getElementById("submitbutton").innerHTML = "Sign Up";
+  }
+  function disablesumbit(){
+    document.getElementById("submitbutton").disabled = true;
+    document.getElementById("submitbutton").innerHTML = "Signing Up...";
+  }
+  
+  function simpleMD5(message) {
+    // This is not a secure hashing algorithm and should not be used for real-world purposes.
+    // It's only provided for educational demonstration.
+  
+    let hash = 0;
+    for (let i = 0; i < message.length; i++) {
+      const charCode = message.charCodeAt(i);
+      hash = (hash << 5) - hash + charCode;
+      hash &= hash; // Convert to 32-bit integer
+    }
+    return hash.toString(16); // Convert to hexadecimal string
+  }
+  
+  // Add event listeners to radio buttons
+  radioButtons.forEach((button) => {
+    button.addEventListener("change", toggleExtraFields);
+  });
+
+  signupForm.addEventListener("submit", async function (event) {
+    event.preventDefault();
+    disablesumbit();
+    if(document.getElementById("username").value.length < 4||document.getElementById("username").value.includes(" ")){
+        enablesubmit();
+        alert("Username should be atleast 4 characters long");
+        return;
+    }
+    if(document.getElementById("name").value===""||document.getElementById("password").value===""||document.getElementById("verify-password").value===""||document.querySelector('input[name="type"]:checked').value===""){
+        enablesubmit();
+        alert("All fields are required");
+        return;
+    }
+    if (document.getElementById("password").value !==document.getElementById("verify-password").value){
+        enablesubmit();
+        alert("Passwords do not match");
+        return;
+    }
     
-{% endblock %}
-{% block script %}
-    <script>
-      const radioButtons = document.querySelectorAll('input[name="type"]');
-      const organiserFields = document.getElementById('organiser-fields');
-      const studentFields = document.getElementById('student-fields');
-      const outsiderFields = document.getElementById('outsider-fields');
-      const signupForm = document.getElementById('signup-form');  
+  
+    const formData = {
+      username: document.getElementById("username").value,
+      name: document.getElementById("name").value,
+      password: simpleMD5(document.getElementById("password").value),
+      type: document.querySelector('input[name="type"]:checked').value,
+    };
 
-      function toggleExtraFields() {
-          organiserFields.style.display = 'none';
-          studentFields.style.display = 'none';
-          outsiderFields.style.display = 'none';
-
-          const selectedType = document.querySelector('input[name="type"]:checked').value;
-
-          switch (selectedType) {
-              case 'organiser':
-                  organiserFields.style.display = 'block';
-                  break;
-              case 'student':
-                  studentFields.style.display = 'block';
-                  break;
-              case 'outsider':
-                  outsiderFields.style.display = 'block';
-                  break;
-          }
-      }
-
-      // Initial display state
-      toggleExtraFields();
-
-      // Add event listeners to radio buttons
-      radioButtons.forEach(button => {
-          button.addEventListener('change', toggleExtraFields);
-      });
-      
-      signupForm.addEventListener('submit', function(event) {
-          // ... other validation you might have ...
-
-
-        const selectedType = document.querySelector('input[name="type"]:checked').value;
-        if (selectedType === 'organiser') {
-            if (document.getElementById('roll-no').value === '' ||
-                document.getElementById('enrollment-key').value === '') {
-                event.preventDefault();
-                alert('Please fill all required fields for Organiser');
-            }
-        } else if (selectedType === 'student') {
-            if (document.getElementById('student-roll-no').value === '') {
-                event.preventDefault();
-                alert('Please fill all required fields for Student');
-            }
-        } else if (selectedType === 'outsider') {
-            if (document.getElementById('college').value === '' ) {
-                event.preventDefault();
-                alert('Please fill all required fields for Outsider');
-            }
-        }
-    });
-
-      signupForm.addEventListener('submit', async function(event) {
-        event.preventDefault();
-        if (document.getElementById('password').value !== document.getElementById('verify-password').value) {
-            alert('Passwords do not match');
+    const selectedType = formData.type;
+    if (selectedType === "organiser") {
+        if(document.getElementById("roll-no").value===""||document.getElementById("enrollment-key").value===""){
+            enablesubmit();
+            alert("All fields are required");
             return;
         }
-        const formData = {
-            username: document.getElementById('username').value,
-            name: document.getElementById('name').value,
-            password: document.getElementById('password').value,
-            type: document.querySelector('input[name="type"]:checked').value
-      };
-
-      const selectedType = formData.type;
-      if (selectedType === 'organiser') {
-          formData.roll_no = document.getElementById('roll-no').value;
-          formData.roll_name = document.getElementById('roll-name').value;
-          formData.enrollment_key = document.getElementById('enrollment-key').value;
-      } else if (selectedType === 'student') {
-          formData.roll_no = document.getElementById('student-roll-no').value;
-      } else if (selectedType === 'outsider') {
-          formData.college = document.getElementById('college').value;
-      }
-      console.log(formData);
-      // Send POST request
-      const response = await fetch('/signup', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(formData) 
-      });
-
-      if (response.ok) {
-          const result = await response.json();
-          alert(result.message); // Display success message
-            window.location.href = '/events';
-      } else {
-          alert("Signup failed. Please try again.");
-      }
+        formData.roll_no = document.getElementById("roll-no").value;
+        formData.enrollment_key = document.getElementById("enrollment-key").value;
+    } else if (selectedType === "student") {
+        if(document.getElementById("student-roll-no").value===""){
+            enablesubmit();
+            alert("All fields are required");
+            return;
+        }
+        formData.roll_no = document.getElementById("student-roll-no").value;
+    } else if (selectedType === "outsider") {
+        if(document.getElementById("college").value===""){
+            enablesubmit();
+            alert("All fields are required");
+            return;
+        }
+        formData.college = document.getElementById("college").value;
+    }
+    const response = await fetch("/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formData),
+    });
+    if (!response.ok) {
+        enablesubmit();
+        alert("Server Error");
+        return;
+    }
+    result = await response.json();
+    console.log(result);
+    if (result.status === 1) {
+        console.log(result.token);
+        document.cookie = `token=${result.token}`;
+        enablesubmit();
+        alert(result.message); // Display success message
+        window.location.replace("/events"); // Redirect to home page
+    } else {
+        enablesubmit();
+        document.getElementById("password").value = "";
+        document.getElementById("verify-password").value = "";
+        alert(result.message); // Display error message
+    }
   });
-    </script>
-    
-{% endblock %}
+</script>
 
+{% endblock %}
 
 <!-- <img src="/static/image.jpeg" alt="An image" /> -->

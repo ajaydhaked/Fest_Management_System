@@ -1,5 +1,6 @@
 from database.connect import conn
 from psycopg2 import Error
+from models.allmodels import *
 
 # Query 1: Register a student in A4_Student table
 def register_student(name, roll_number, username, password, only_student):
@@ -14,9 +15,13 @@ def register_student(name, roll_number, username, password, only_student):
 
 
 # Query 2: Register an Outsider in A4_Outsider
-def register_outsider(name, username, password, college_id):
+def register_outsider(name, username, password, collegename):
     try:
         cursor = conn.cursor()
+        # get college_id from collegename
+        query = f"SELECT college_id FROM A4_College WHERE college_name = '{collegename}';"
+        cursor.execute(query)
+        college_id = cursor.fetchone()[0]
         query = f"INSERT INTO A4_Outsider (name, username, password, college_id) VALUES ('{name}', '{username}', '{password}', {college_id});"
         cursor.execute(query)
         conn.commit()
@@ -27,8 +32,6 @@ def register_outsider(name, username, password, college_id):
     
 # Query 3: Register an Organizer in both A4_Student and A4_Organizer_to_Student tables
 def register_organizer(name, roll_number, username, password, only_student, enrollment_key):
-
-        
     try:
         cursor = conn.cursor()
         query0 = f"SELECT organizer_id FROM A4_Organizer_Role WHERE enrollment_key = '{enrollment_key}';"
@@ -51,7 +54,7 @@ def register_organizer(name, roll_number, username, password, only_student, enro
         
 
 # Query 4: Register an outsider for an event in A4_Outsider_Participate_Event
-async def register_outsider_for_event(event_id, username):
+def register_outsider_for_event(event_id, username):
     try:
         cursor = conn.cursor()
         query = f"INSERT INTO A4_Outsider_Participate_Event (event_id, username) VALUES ({event_id}, '{username}');"
@@ -62,7 +65,7 @@ async def register_outsider_for_event(event_id, username):
         print(f"Error executing query: {e}")
 
 # Query 5: Fetch event name, type, and description from A4_Event table
-async def fetch_event_details():
+def fetch_event_details():
     try:
         cursor = conn.cursor()
         query = "SELECT name, type, description FROM A4_Event;"
@@ -74,7 +77,7 @@ async def fetch_event_details():
         print(f"Error executing query: {e}")
 
 # Query 6: Register a student for an event in A4_Student_Participate_Event
-async def register_student_for_event(event_id, username):
+def register_student_for_event(event_id, username):
 
     try:
         cursor = conn.cursor()
@@ -86,7 +89,7 @@ async def register_student_for_event(event_id, username):
         print(f"Error executing query: {e}")
 
 # Query 7: Allow student to volunteer in a given event in A4_Student_Volunteer_Event
-async def allow_student_to_volunteer(event_id, username):
+def allow_student_to_volunteer(event_id, username):
     try:
         cursor = conn.cursor()
         query = f"INSERT INTO A4_Student_Volunteer_Event (event_id, username) VALUES ({event_id}, '{username}');"
@@ -98,7 +101,7 @@ async def allow_student_to_volunteer(event_id, username):
 
 # Query 8: Allow organizer to view all participants for a particular event
 # A list of names and usernames are returned 
-async def view_participants_for_event(desired_event_id):
+def view_participants_for_event(desired_event_id):
     try:
         cursor = conn.cursor()
         query_student = f"""
@@ -126,7 +129,7 @@ async def view_participants_for_event(desired_event_id):
 
 
 # Query 9: Allow organizer to view all volunteers for an event
-async def view_volunteers_for_event(desired_event_id):
+def view_volunteers_for_event(desired_event_id):
 
     try:
         cursor = conn.cursor()
@@ -145,7 +148,7 @@ async def view_volunteers_for_event(desired_event_id):
 
 
 # Query 10: Allow organizer to change name, type, and description of an event
-async def change_event_details(desired_event_id, new_event_name, new_event_type, new_event_description):
+def change_event_details(desired_event_id, new_event_name, new_event_type, new_event_description):
 
     try:
         cursor = conn.cursor()
@@ -161,7 +164,7 @@ async def change_event_details(desired_event_id, new_event_name, new_event_type,
         print(f"Error executing query: {e}")
 
 # Query 11: Check if username exists in the A4_Student table
-async def check_username_in_student_table(username):
+def check_username_in_student_table(username):
 
     try:
         cursor = conn.cursor()
@@ -174,7 +177,7 @@ async def check_username_in_student_table(username):
         print(f"Error executing query: {e}")
 
 # Query 12: Check if username exists in the A4_Outsider table
-async def check_username_in_outsider_table(username):
+def check_username_in_outsider_table(username):
 
     try:
         cursor = conn.cursor()
@@ -187,7 +190,7 @@ async def check_username_in_outsider_table(username):
         print(f"Error executing query: {e}")
 
 # Query 13: Check if username exists in the A4_Organizer_to_Student table
-async def check_username_in_organizer_to_student_table(username):
+def check_username_in_organizer_to_student_table(username):
     try:
         cursor = conn.cursor()
         query = f"SELECT COUNT(*) FROM A4_Organizer_to_Student WHERE username = '{username}';"
@@ -197,3 +200,223 @@ async def check_username_in_organizer_to_student_table(username):
         return result
     except Error as e:
         print(f"Error executing query: {e}")
+
+def checkfororganiser(user=Organiser_l):
+    # check for user.username
+    # return 1 for username already exists
+    # return 2 for roll number already exists
+    # return 3 for enrollment key does not exist
+    # return 0 for success
+    try:
+        cursor = conn.cursor()
+        queryusername = f"SELECT username FROM A4_Student WHERE username = '{user.username}';"
+        cursor.execute(queryusername)
+        result = cursor.fetchall()
+        if len(result) > 0:
+            return 1
+        queryrollno = f"SELECT roll_number FROM A4_Student WHERE roll_number = '{user.roll_no}';"
+        cursor.execute(queryrollno)
+        result = cursor.fetchall()
+        if len(result) > 0:
+            return 2
+        # find the enrollment key
+        queryenroll = f"SELECT enrollment_key FROM A4_Organizer_Role WHERE enrollment_key = '{user.enrollment_key}';"
+        cursor.execute(queryenroll)
+        result = cursor.fetchall()
+        if len(result) == 0:
+            return 3
+        cursor.close()
+        return 0
+    except Error as e:
+        print(f"Error executing query: {e}")
+        
+def checkforstudent(user=Student_l):
+    # check for user.username
+    # return 1 for username already exists
+    # return 2 for roll number already exists
+    # return 0 for success
+    try:
+        cursor = conn.cursor()
+        queryusername = f"SELECT username FROM A4_Student WHERE username = '{user.username}';"
+        cursor.execute(queryusername)
+        result = cursor.fetchall()
+        print(result)
+        if len(result) > 0:
+            return 1
+        queryrollno = f"SELECT roll_number FROM A4_Student WHERE roll_number = '{user.roll_no}';"
+        cursor.execute(queryrollno)
+        result = cursor.fetchall()
+        if len(result) > 0:
+            return 2
+        cursor.close()
+        return 0
+    except Error as e:
+        print(f"Error executing query: {e}")
+        
+def checkforoutsider(user=Outsider_l):
+    # check for user.username
+    # return 1 for username already exists
+    # return 0 for success
+    try:
+        cursor = conn.cursor()
+        queryusername = f"SELECT username FROM A4_Outsider WHERE username = '{user.username}';"
+        cursor.execute(queryusername)
+        result = cursor.fetchall()
+        if len(result) > 0:
+            return 1
+        cursor.close()
+        return 0
+    except Error as e:
+        print(f"Error executing query: {e}")
+        
+def checkforuser(user=User_l):
+    # check for user.username and user.password
+    # return 1 for invalid username or password
+    # return 0 for success
+    try:
+        cursor = conn.cursor()
+        query = f"SELECT username FROM A4_Student WHERE username = '{user.username}' AND password = '{user.password}';"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        if len(result) > 0:
+            print("Student")
+            cursor.close()
+            return 0
+        query = f"SELECT username FROM A4_Outsider WHERE username = '{user.username}' AND password = '{user.password}';"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        if len(result) > 0:
+            print("Outsider")
+            cursor.close()
+            return 0
+        query = f"SELECT username FROM A4_Organizer_to_Student WHERE username = '{user.username}';"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        if len(result) > 0:
+            print("Organiser")
+            cursor.close()
+            return 0
+        cursor.close()
+        return 1
+    except Error as e:
+        print(f"Error executing query: {e}")
+        
+def getfrontenduser(token):
+    if token is None:
+        return frontenduser(is_logged_in=0, username=None, is_organiser=0, is_student=0, is_outsider=0, participate_events=[], volunteer_events=[])
+    try:
+        cursor = conn.cursor()
+        query = f"SELECT * FROM A4_Organizer_to_Student WHERE username = '{token}';"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        if len(result) > 0:
+            cursor.close()
+            return frontenduser(is_logged_in=1, username=token, is_organiser=1, is_student=0, is_outsider=0, participate_events=[], volunteer_events=[])
+        query = f"SELECT * FROM A4_Student WHERE username = '{token}';"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        if len(result) > 0:
+            participated_events = []
+            volunteer_events = []
+            query = f"SELECT event_id FROM A4_Student_Participate_Event WHERE username = '{token}';"
+            cursor.execute(query)
+            result = cursor.fetchall()
+            for i in range(len(result)):
+                participated_events.append(result[i][0])
+            query = f"SELECT event_id FROM A4_Student_Volunteer_Event WHERE username = '{token}';"
+            cursor.execute(query)
+            result = cursor.fetchall()
+            for i in range(len(result)):
+                volunteer_events.append(result[i][0])
+            cursor.close()
+            return frontenduser(is_logged_in=1, username=token, is_organiser=0, is_student=1, is_outsider=0, participate_events=participated_events, volunteer_events=volunteer_events)
+        
+        query = f"SELECT * FROM A4_Outsider WHERE username = '{token}';"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        if len(result) > 0:
+            participated_events = []
+            query = f"SELECT event_id FROM A4_Outsider_Participate_Event WHERE username = '{token}';"
+            cursor.execute(query)
+            result = cursor.fetchall()
+            for i in range(len(result)):
+                participated_events.append(result[i][0])
+            cursor.close()
+            return frontenduser(is_logged_in=1, username=token, is_organiser=0, is_student=0, is_outsider=1, participate_events=participated_events, volunteer_events=[])
+        cursor.close()
+        return frontenduser(is_logged_in=0, username=None, is_organiser=0, is_student=0, is_outsider=0, participate_events=[], volunteer_events=[])
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return frontenduser(is_logged_in=0, username=None, is_organiser=0, is_student=0, is_outsider=0, participate_events=[], volunteer_events=[])
+    
+    
+def getalleventstable():
+    try:
+        cursor = conn.cursor()
+        query = "SELECT * FROM A4_Event;"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        events = []
+        for i in range(len(result)):
+            events.append(Event(event_id=result[i][0], name=result[i][1], date=result[i][2].strftime("%d-%m-%Y"), type=result[i][3], description=result[i][4]))
+        cursor.close()
+        return events
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return []
+    
+def getallcollegenames():
+    try:
+        cursor = conn.cursor()
+        query = "SELECT college_name FROM A4_College;"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        colleges = []
+        for i in range(len(result)):
+            colleges.append(result[i][0])
+        cursor.close()
+        return colleges
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return []
+    
+def getalleventparticipants(event_id):
+    try:
+        cursor = conn.cursor()
+        query = f"SELECT username FROM A4_Student_Participate_Event WHERE event_id = {event_id};"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        students = []
+        for i in range(len(result)):
+            students.append(result[i][0])
+        query = f"SELECT username FROM A4_Outsider_Participate_Event WHERE event_id = {event_id};"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        outsiders = []
+        for i in range(len(result)):
+            outsiders.append(result[i][0])
+        # volunteers also
+        query = f"SELECT username FROM A4_Student_Volunteer_Event WHERE event_id = {event_id};"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        volunteers = []
+        for i in range(len(result)):
+            volunteers.append(result[i][0])
+        cursor.close()
+        return students, outsiders, volunteers 
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return [], []
+    
+def geteventdetails(event_id):
+    try:
+        cursor = conn.cursor()
+        query = f"SELECT * FROM A4_Event WHERE event_id = {event_id};"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        event = Event(event_id=result[0][0], name=result[0][1], date=result[0][2].strftime("%d-%m-%Y"), type=result[0][3], description=result[0][4])
+        cursor.close()
+        return event
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return Event()
