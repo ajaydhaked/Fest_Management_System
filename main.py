@@ -146,6 +146,23 @@ async def login(user: User_l):
     else:
         return {"message": "Login successful", "status": 1,"token":user.username}
 
+@app.post("/declarewinners")
+async def declarewinners(request: Request):
+    user= getfrontenduser(request.cookies.get("token"))
+    if(user.is_organiser == 0):
+        return {"message": "You are not authorized to declare winners", "status": 0}
+    data = await request.json()
+    event_id = data['event_id']
+    winners = [data['winner1'],data['winner2'],data['winner3']]
+    print(winners)
+    for i in range(3):
+        winners[i] = winners[i].replace(" ","")
+    if len(list(set(winners))) != 3:
+        return {"message": "Error: No two Winners should be same", "status": 0}
+    er = declarewinnersforanevent(event_id,winners)
+    if er!=-1:
+        return {"message": f"Error: {winners[er]} is not in participants list", "status": 0}
+    return {"message": "Winners declared successfully", "status": 1}
 
 @app.get("/admin")
 async def read_root(request: Request):

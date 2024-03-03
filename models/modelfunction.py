@@ -651,3 +651,49 @@ def getallenrollments():
     except Error as e:
         print(f"Error executing query: {e}")
         return []
+    
+def declarewinnersforanevent(event_id, winners):
+    try:
+        cursor = conn.cursor()
+        er=-1
+        for i in range(len(winners)):
+            query = f"SELECT COUNT(*) FROM a4_student_participate_event WHERE username='{winners[i]}';"
+            cursor.execute(query)
+            result = int(cursor.fetchone()[0])
+            if result > 0:
+                continue
+            # check if outsider
+            query = f"SELECT COUNT(*) FROM a4_outsider_participate_event WHERE username='{winners[i]}';"
+            cursor.execute(query)
+            result = int(cursor.fetchone()[0])
+            if result > 0:
+                continue
+            er=i
+            break    
+
+        if er!=-1:
+            conn.commit()
+            cursor.close()
+            return er
+        for i in range(len(winners)):
+            # check if student
+            query = f"SELECT COUNT(*) FROM a4_student_participate_event WHERE username='{winners[i]}';"
+            cursor.execute(query)
+            result = int(cursor.fetchone()[0])
+            if result > 0:
+                query = f"INSERT INTO a4_winners_student (event_id, username, rank) VALUES ({event_id}, '{winners[i]}', {i+1});"
+                cursor.execute(query)
+                continue
+            # check if outsider
+            query = f"SELECT COUNT(*) FROM a4_outsider_participate_event WHERE username='{winners[i]}';"
+            cursor.execute(query)
+            result = int(cursor.fetchone()[0])
+            if result > 0:
+                query = f"INSERT INTO A4_winners_outsider (event_id, username, rank) VALUES ({event_id}, '{winners[i]}', {i+1});"
+                cursor.execute(query)
+                continue
+        conn.commit()
+        cursor.close()
+        return -1
+    except Error as e:
+        print(f"Error executing query: {e}")
