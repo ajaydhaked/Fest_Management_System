@@ -16,6 +16,14 @@ def read_root(request: Request,message: str = None):
     user= getfrontenduser(request.cookies.get("token"))
     return templates.TemplateResponse("about.html", {"request": request,"message":message, "page": "about","user":user})
 
+@app.get("/accomodation")
+def read_root(request: Request,message: str = None):
+    user= getfrontenduser(request.cookies.get("token"))
+    if(user.is_outsider == 0):
+        return RedirectResponse("/events?message=You are not authorized to view this page",status_code=302)
+    hallname = gethallname(user.username)
+    return templates.TemplateResponse("accomodation.html", {"request": request,"message":message, "page": "accomodation","user":user,"hallname":hallname})
+
 @app.get("/signup")
 def v_signup(request: Request,message: str = None):
     user= getfrontenduser(request.cookies.get("token"))
@@ -67,6 +75,7 @@ async def signup(request: Request):
         if temp == 1:
             return {"message": "Username already exists", "status": 0}
         register_outsider(user.name,user.username,user.password,user.college)
+        allocate_outsider_to_hall(user.username)
         return {"message": "Signup successful", "status": 1,"token":user.username}
     else:
         return {"message": "Invalid user type", "status": 0}

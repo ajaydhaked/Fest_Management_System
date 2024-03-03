@@ -420,3 +420,35 @@ def geteventdetails(event_id):
     except Error as e:
         print(f"Error executing query: {e}")
         return Event()
+    
+def allocate_outsider_to_hall(username):
+    try:
+        cursor = conn.cursor()
+        # count of users in outsider table
+        query = "SELECT COUNT(*) FROM A4_Outsider;"
+        cursor.execute(query)
+        count = cursor.fetchone()[0]
+        hall_id = count/3 + 1
+        # get hall name
+        query = f"SELECT hall_name FROM A4_Hall WHERE hall_id = {hall_id};"
+        cursor.execute(query)
+        hall_name = cursor.fetchone()[0]
+        # allocate hall to user
+        query = f"INSERT INTO A4_outsider_accomodation (username,accomodation_place,MerchTaken) VALUES ('{username}','{hall_name}',0);"
+        cursor.execute(query)
+        conn.commit()
+        cursor.close()
+    except Error as e:
+        print(f"Error executing query: {e}")
+        
+def gethallname(username):
+    try:
+        cursor = conn.cursor()
+        query = f"SELECT accomodation_place FROM A4_outsider_accomodation WHERE username = '{username}';"
+        cursor.execute(query)
+        result = cursor.fetchone()[0]
+        cursor.close()
+        return result
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return None
