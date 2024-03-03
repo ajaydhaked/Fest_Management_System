@@ -192,9 +192,8 @@
         window.location.replace("/events"); // Redirect to home page
     } else {
         enablesubmit();
-        document.getElementById("password").value = "";
-        document.getElementById("verify-password").value = "";
-        alert(result.message); // Display error message
+        document.getElementById("signup-form").reset();
+        alert("Unable to signup!!"); // Display error message
     }
   });
 </script>

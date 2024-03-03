@@ -49,6 +49,14 @@ def read_root(request: Request,message: str = None):
     organisers = getallorganisers()
     return templates.TemplateResponse("/admin/participants.html", {"request": request,"message":message, "page": "participants","user":user,"students":students,"outsiders":outsiders,"organisers":organisers})
 
+@app.get("/create_user")
+def read_root(request: Request,message: str = None):
+    user= getfrontenduser(request.cookies.get("token"))
+    if(user.is_organiser == 0):
+        return RedirectResponse("/events?message=You are not authorized to view this page",status_code=302)
+    keys = getallenrollments()
+    return templates.TemplateResponse("/admin/createuser.html", {"request": request,"message":message, "page": "create_user","user":user,"keys":keys})
+
 @app.get("/signup")
 def v_signup(request: Request,message: str = None):
     user= getfrontenduser(request.cookies.get("token"))

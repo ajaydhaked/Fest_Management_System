@@ -635,3 +635,19 @@ def delete_a_outsider(username):
         cursor.close()
     except Error as e:
         print(f"Error executing query: {e}")
+        
+        
+def getallenrollments():
+    try:
+        cursor = conn.cursor()
+        query = "SELECT enrollment_key, role FROM A4_Organizer_Role;"
+        cursor.execute(query)
+        result = cursor.fetchall()
+        enrollments = []
+        for i in range(len(result)):
+            enrollments.append([result[i][0], result[i][1]])
+        cursor.close()
+        return enrollments
+    except Error as e:
+        print(f"Error executing query: {e}")
+        return []
