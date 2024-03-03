@@ -497,7 +497,7 @@ def getstudentdetails(username):
         query = f"SELECT * FROM A4_Student WHERE username = '{username}';"
         cursor.execute(query)
         result = cursor.fetchone()
-        temp = profile(name=result[0], username=result[1], rollno=result[2], collegename="IIT Kharagpur", merchtaken=0, rolename="", roledesc="")
+        temp = profile(name=result[0], username=result[2], rollno=result[1], collegename="IIT Kharagpur", merchtaken=0, rolename="", roledesc="")
         cursor.close()
         return temp
     except Error as e:
