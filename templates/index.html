@@ -6,6 +6,30 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link rel="icon" type="image/x-icon" href="/static/logo.png">
   {% block css %}
+  
+  <style>
+    body {
+      background-image: url("https://i.pinimg.com/736x/ef/0f/7f/ef0f7f0e305249901dce2ed34605d332.jpg");
+      color: #1a0232;
+    }
+
+    .container {
+      margin-top: 100px;
+      text-align: center;
+      height: 40vw;
+    }
+
+    .footer {
+      background-color: #1a0232;
+      padding: 20px;
+      text-align: center;
+      color: white;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+    }
+  </style>
+  
   {% endblock %}
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -19,14 +43,20 @@
   {% endblock %}
   <div class="container">
     {% block content %}
-    <div class="row">
-      <div class="col-12">
-          <h1 class="text-center">Home page</h1>
-      </div>
-  </div>
+    <div class="container">
+      <h1>TECT FEST 2024</h1>
+      <p>Welcome to the biggest fest in Asia at IIT Kharagpur!</p>
+      <p>
+        Join us for a celebration of technology, innovation, and creativity.
+      </p>
+    </div>
     {% endblock %}
   </div>
-  {% block footer %}{% endblock %}
+  {% block footer %}
+  <div class="footer">
+    <p>© 2024 TECT FEST. All rights reserved.</p>
+  </div>
+  {% endblock %}
     <!-- event cards -->
    
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
