@@ -38,6 +38,9 @@
       </div>
       <div class="modal-footer">
         {% if event.winner_declared==1 %}
+          {% if user.is_organiser==1 %}
+            <a href="http://127.0.0.1:8000/event_analytics/{{event.event_id}}"class="btn btn-primary">View Participants and Volunteers</a>
+          {% endif %}
         {% elif user.is_logged_in==0 %}
           <a href="/login?message=Login first to register in event" class="btn btn-primary" >Register</a>
           <a href="/login?message=Login first to register in event" class="btn btn-primary" >Volunteer</a>
