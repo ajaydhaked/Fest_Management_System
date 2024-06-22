@@ -6,7 +6,7 @@ Fest Management System is a web application developed for managing university fe
 
 ## Currently hosted on
 
-The application is currently hosted at https://your-app-url.com
+The application is currently hosted at https://fest-management-system.onrender.com/
 
 ## Deployment
 
