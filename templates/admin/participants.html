@@ -8,12 +8,9 @@ endblock %} {% block content %}
       {% for student in students %}
       <li class="list-group-item text-center d-flex justify-content-between">
         <p>{{student}}</p>
-        <button
-          class="btn btn-danger"
-          onclick="deleteuser(event,'{{student}}',1)"
-        >
-          Delete
-        </button>
+        {% if user.username=='admin' %}
+        <button class="btn btn-danger" onclick="deleteuser(event,'{{student}}',1)">Delete</button>
+        {% endif %}
       </li>
       {% endfor %}
     </ul>
@@ -25,12 +22,9 @@ endblock %} {% block content %}
       {% for outsider in outsiders %}
       <li class="list-group-item text-center d-flex justify-content-between">
         <p>{{outsider}}</p>
-        <button
-          class="btn btn-danger"
-          onclick="deleteuser(event,'{{outsider}}',2)"
-        >
-          Delete
-        </button>
+        {% if user.username=='admin'%}
+        <button class="btn btn-danger" onclick="deleteuser(event,'{{outsider}}',2)">Delete</button>
+        {% endif%}
       </li>
       {% endfor %}
     </ul>
@@ -42,12 +36,9 @@ endblock %} {% block content %}
       {% for organiser in organisers %}
       <li class="list-group-item text-center d-flex justify-content-between">
         <p>{{organiser}}</p>
-        <button
-          class="btn btn-danger"
-          onclick="deleteuser(event,'{{organiser}}',3)"
-        >
-          Delete
-        </button>
+        {% if user.username=='admin' %}
+        <button class="btn btn-danger" onclick="deleteuser(event,'{{organiser}}',3)"> Delete</button>
+        {% endif %}
       </li>
       {% endfor %}
     </ul>

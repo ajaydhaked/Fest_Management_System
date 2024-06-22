@@ -697,3 +697,14 @@ def declarewinnersforanevent(event_id, winners):
         return -1
     except Error as e:
         print(f"Error executing query: {e}")
+        
+        
+def createevent(name, date, type, description):
+    try:
+        cursor = conn.cursor()
+        query = f"INSERT INTO A4_Event (name, date, type, description) VALUES ('{name}', '{date}', '{type}', '{description}');"
+        cursor.execute(query)
+        conn.commit()
+        cursor.close()
+    except Error as e:
+        print(f"Error executing query: {e}")

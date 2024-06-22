@@ -1,0 +1,71 @@
+{% extends "index.html" %}
+{% block css %}{% endblock %}
+{% block content %}
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+      <h2 class="mb-4">Create Event</h2>
+      <form>
+        <div class="form-group">
+          <label for="name">Event Name</label>
+          <input type="text" class="form-control" id="name" name="name" placeholder="Enter Name" required>
+        </div>
+        <div class="form-group">
+          <label for="date">Event Date</label>
+          <input type="date" class="form-control" id="date" name="date" required>
+        </div>
+        <div class="form-group">
+          <label for="type">Event Type</label>
+          <input type="text" class="form-control" id="type" name="type" placeholder="Enter Type" required>
+        </div>
+        <div class="form-group">
+          <label for="description">Event Description</label>
+          <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter Description" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary my-2" onclick="create_event(event)" >Submit</button>
+      </form>
+    </div>
+  </div>
+
+{% endblock %}
+{% block footer %}{% endblock %}
+{% block script %}
+<script>
+    function create_event(event){
+        event.preventDefault();
+        var name = document.getElementById('name').value;
+        var date = document.getElementById('date').value;
+        var type = document.getElementById('type').value;
+        var description = document.getElementById('description').value;
+        if(name == '' || date == '' || type == '' || description == ''){
+            alert('Please fill all the fields');
+            return;
+        }
+        var data = {
+            name: name,
+            date: date,
+            type: type,
+            description: description
+        }
+        console.log(data);
+        fetch('/create_event', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.status==1){
+                alert('Event Created Successfully');
+                location.reload();
+            }
+            else{
+                alert('Error in creating event');
+            }
+        })
+    }
+    
+</script>
+{% endblock %}

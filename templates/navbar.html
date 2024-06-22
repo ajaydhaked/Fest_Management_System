@@ -24,14 +24,20 @@
             {% endif %}
             {% if user.is_organiser==1 %}
               <li class="nav-item">
-                <a class="nav-link" href="/admin">Show Database</a>
+                <a class="nav-link" href="/participants">Participants</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/participants">Participants</a>
+                <a class="nav-link" href="/create_event">Create Event</a>
+              </li>
+              {% if user.username=='admin' %}
+              <li class="nav-item">
+                <a class="nav-link" href="/admin">Show Database</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="/create_user">Create User</a>
               </li>
+              {% endif%}
+              
             {% endif %}
           {% endif %}
         </ul

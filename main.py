@@ -80,6 +80,22 @@ def v_login(request: Request,message: str = None):
         print("message is none")
     return templates.TemplateResponse("login.html", {"request": request,"message":message,"user":user})
 
+@app.get("/create_event")
+def v_create_event(request: Request,message: str = None):
+    user= getfrontenduser(request.cookies.get("token"))
+    if(user.is_organiser == 0):
+        return RedirectResponse("/events?message=You are not authorized to view this page",status_code=302)
+    return templates.TemplateResponse("/admin/createevent.html", {"request": request,"message":message,"user":user})
+
+@app.post("/create_event")
+async def create_event(request: Request):
+    user= getfrontenduser(request.cookies.get("token"))
+    if(user.is_organiser == 0):
+        return {"message": "You are not authorized to create an event", "status": 0}
+    data = await request.json()
+    createevent(data['name'],data['date'],data['type'],data['description'])
+    return {"message": "Event created successfully", "status": 1}
+
 @app.post("/deleteuser/{username}")
 async def deleteuser(request: Request,username:str):
     user= getfrontenduser(request.cookies.get("token"))
@@ -97,6 +113,8 @@ async def deleteuser(request: Request,username:str):
         return {"message": "Deleted successfully", "status": 1}
     elif temp == 3:
         print("deleting organiser")
+        if username=='admin':
+            return {"message": "You cannot delete admin", "status": 0}
         delete_a_organiser(username)
         return {"message": "Deleted successfully", "status": 1}
     

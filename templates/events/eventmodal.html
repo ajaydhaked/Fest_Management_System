@@ -69,7 +69,12 @@
 <script>
   async function registerevent(e,event_id,type){
     e.preventDefault();
-    temp = confirm("Are you sure you want to register for this event?");
+    temp=0;
+    if(type==1){
+      temp = confirm("Are you sure you want to register in this event?");
+    } else {
+      temp = confirm("Are you sure you want to volunteer in this event?");
+    }
     if(temp==false){
       return;
     }
