@@ -102,10 +102,20 @@ CREATE TABLE A4_Student_Volunteer_Event (
     FOREIGN KEY (username) REFERENCES A4_Student(username)
 );
 
+-- insert into A4_Student
+INSERT INTO A4_Student (name, roll_number, username, password, onlyStudent) VALUES
+('Ajay', '123456789', 'ajay123', 'ajay123', TRUE),
+('Vijay', '987654321', 'vijay123', 'vijay123', TRUE)
+;
+
+-- insert into A4_Outsider
+INSERT INTO A4_Outsider (name, username, password, college_id) VALUES
+('Outsider', 'outsider', 'outsider', 1)
+;
+
 -- for inserting data into the table events
-a4_event(name,date,type,description) VALUES
+INSERT INTO a4_event(name,date,type,description) VALUES
 ('Megaevent',date '2020-12-12','Cultural','Megaevent is a cultural event with highteck facilities'),
-("War Robot",date '2020-12-12','Technical','War Robot is a technical event with highteck facilities'),
 ('Dance War',date '2020-12-12','Cultural','Dance is a cultural event with highteck facilities'),
 ('Code Hackathon',date '2020-12-12','Technical','Hackathon is a technical event with highteck facilities'),
 ('Music Beats',date '2020-12-12','Cultural','Music is a cultural event with highteck facilities'),
@@ -165,7 +175,7 @@ INSERT INTO A4_Halls (hall_id, hall_name) VALUES
 
 -- insert into A4_outsider_accomodation
 INSERT INTO A4_outsider_accomodation (username, accomodation_place, MerchTaken) VALUES
-('outsider', 'Hall 1', TRUE);
+('outsider', 'Hall 1', 0);
 
 
 -- insert into A4_winners_student
