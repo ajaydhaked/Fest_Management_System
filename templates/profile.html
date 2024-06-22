@@ -1,0 +1,34 @@
+{% extends "index.html" %}
+{% block css %}{% endblock %}
+{% block footer%}{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center">Profile</h1>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><strong>Name: </strong>{{profile.name}}</h5>
+                    <p class="card-text "><strong>Username: </strong>{{profile.username}}</p>
+                    {% if user.is_outsider==1 %}
+                        <p class="card-text"><strong>College Name: </strong>{{profile.collegename}}</p>
+                        <p class="card-text"><strong>Merch Taken: </strong>{% if profile.merchtaken==0 %}No!(<em>kindly take your merch</em>){% else %}Yes{% endif %}</p>
+                    {% endif %}
+                    {% if user.is_outsider==0 %}
+                        <p class="card-text"><strong>Roll Number: </strong>{{ profile.rollno }}</p>
+                    {% endif %}
+                    {% if user.is_organiser %}
+                        <p class="card-text"><strong>Role: </strong>{{profile.rolename}}</p>
+                        <p class="card-text"><strong>Role Description: </strong>{{profile.roledesc}}</p>
+                    {% endif %}
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

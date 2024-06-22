@@ -1,19 +1,104 @@
-<div class="modal fade" id="event{{event.event_id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="exampleModalLabel">{{event.name}}</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div
+  class="modal fade"
+  id="event{{event.event_id}}"
+  tabindex="-1"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">{{event.name}}</h1>
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="modal"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <p>{{event.description}}</p>
+        <p>Type: {{event.type}}</p>
+        <p>Date: {{event.date}}</p>
+        {% if event.winner_declared==0 %}
+        <strong>Winners not yet Declared</strong>
+        {% endif %} {% if event.winner_declared==1 %}
+        <div class="mx-3 border rounded py-2">
+          <h5 class="text-center">Winners</h5>
+          <ul class="list-group">
+            {% for st in event.winners %}
+            <li class="list-group-item text-center d-flex justify-content-between">
+              <p>{{st[0]}}</p>
+              <p>{{st[1]}}</p>
+            </li>
+            {% endfor %}
+          </ul>
         </div>
-        <div class="modal-body">
-            <p>{{event.description}}</p>
-            <p>Type: {{event.type}}</p>
-            <p>Date: {{event.date}}</p>
-        </div>
-        <div class="modal-footer">
-          <a href="#" class="btn btn-primary">Register</a>
-          <a href="#" class="btn btn-primary">Volunteer</a>
-        </div>
+        {% endif %}
+      </div>
+      <div class="modal-footer">
+        {% if event.winner_declared==1 %}
+          {% if user.is_organiser==1 %}
+            <a href="http://127.0.0.1:8000/event_analytics/{{event.event_id}}"class="btn btn-primary">View Participants and Volunteers</a>
+          {% endif %}
+        {% elif user.is_logged_in==0 %}
+          <a href="/login?message=Login first to register in event" class="btn btn-primary" >Register</a>
+          <a href="/login?message=Login first to register in event" class="btn btn-primary" >Volunteer</a>
+        {% elif user.is_student==1 %} 
+          {% if event.event_id in user.participate_events %}
+            <a class="btn btn-primary disabled">Already Registered</a>
+          {% elif event.event_id in user.volunteer_events %}
+            <a class="btn btn-primary disabled">Already Volunteering</a>
+          {% else %}
+          <a class="btn btn-primary" onclick="registerevent(event,{{event.event_id}},1)">Register</a>
+          <a class="btn btn-primary" onclick="registerevent(event,{{event.event_id}},2)" >Volunteer</a>
+          {% endif %} 
+        {% elif user.is_outsider==1 %} 
+          {% if event.event_id in user.participate_events %}
+          <a class="btn btn-primary disabled">Already Registered</a>
+          {% else %}
+          <a class="btn btn-primary" onclick="registerevent(event,{{event.event_id}},1)" >Register</a>
+          {% endif %} 
+        {% elif user.is_organiser==1%}
+          <a href="http://127.0.0.1:8000/event_analytics/{{event.event_id}}"class="btn btn-primary">View Participants and Volunteers</a>
+        {% endif %}
       </div>
     </div>
   </div>
+</div>
+<script>
+  async function registerevent(e,event_id,type){
+    e.preventDefault();
+    temp=0;
+    if(type==1){
+      temp = confirm("Are you sure you want to register in this event?");
+    } else {
+      temp = confirm("Are you sure you want to volunteer in this event?");
+    }
+    if(temp==false){
+      return;
+    }
+    const response = await fetch('/register_event',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({event_id: event_id,type:type,token:"{{user.username}}",is_student:{{user.is_student}}})
+    });
+    if (response.ok) {
+      const data = await response.json();
+      if(data.status==1){
+        alert("Registered Successfully");
+        location.reload();
+      } else if(data.status==2){
+        alert("Volunteered Successfully");
+        location.reload();
+      } else {
+        alert(data.message);
+      }
+    } else {
+      alert("Server Error! Please try again later.");
+    }
+
+  }
+</script>

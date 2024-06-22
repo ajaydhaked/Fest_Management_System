@@ -1,0 +1,126 @@
+{% extends "index.html" %} 
+{% block css%}{% endblock %}
+{% block footer%}{% endblock %}
+{% block content %}
+
+<div class="container mt-3">
+  <div class="row">
+    <div class="col-md-8">
+      <h2>{{event.name}}</h2>
+      <p>{{event.description}}</p>
+      <p>Event Type: {{event.type}}</p>
+      <p>Event Date: {{event.date}}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 mx-3 border rounded py-2 "  >
+      <h5 class="text-center">Participants inside IIT KGP</h5>
+      <p class="text-end">Total : {{participants|length}}</p>
+      <ul class="list-group">
+        {% for participant in participants %}
+        <li class="list-group-item text-center">{{participant}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col-md-3 mx-3 border rounded py-2 " >
+      <h5 class="text-center">Participants outside IIT KGP</h5>
+      <p class="text-end">Total : {{outsiders|length}}</p>
+      <ul class="list-group">
+        {% for outsider in outsiders %}
+        <li class="list-group-item text-center">{{outsider}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="col-md-3 mx-3 border rounded py-2 " >
+      <h5 class="text-center">Volunteers</h5>
+      <p class="text-end">Total : {{volunteers|length}}</p>
+      <ul class="list-group">
+        {% for volunteer in volunteers %}
+        <li class="list-group-item text-center">{{volunteer}}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-3 shadow mx-auto my-4 border rounded py-2 ">
+        {% if event.winner_declared==0 %}
+        <strong>Declare Winners</strong>
+          <div class="form-group">
+            <label for="winner1">Winner 1</label>
+            <input type="text" class="form-control" id="winner1" name="winner1" required>
+          </div>
+          <div class="form-group">
+            <label for="winner2">Winner 2</label>
+            <input type="text" class="form-control" id="winner2" name="winner2" required>
+          </div>
+          <div class="form-group">
+            <label for="winner3">Winner 3</label>
+            <input type="text" class="form-control" id="winner3" name="winner3" required>
+          </div>
+          <button type="submit my-3" onclick="declarewinners(event,'{{event.event_id}}')" class="btn btn-primary">Declare</button>
+        {% endif %} {% if event.winner_declared==1 %}
+        <div class="mx-3 border rounded py-2">
+          <h5 class="text-center">Winners</h5>
+          <ul class="list-group">
+            {% for st in event.winners %}
+            <li class="list-group-item text-center d-flex justify-content-between">
+              <p>{{st[0]}}</p>
+              <p>{{st[1]}}</p>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+      </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+  function declarewinners(event, event_id) {
+    var winner1 = document.getElementById('winner1').value;
+    if (winner1 == "") {
+      alert('Winner 1 is required');
+      return;
+    }
+    var winner2 = document.getElementById('winner2').value;
+    if (winner2 == "") {
+      alert('Winner 2 is required');
+      return;
+    }
+    var winner3 = document.getElementById('winner3').value;
+    if (winner3 == "") {
+      alert('Winner 3 is required');
+      return;
+    }
+    var data = {
+      "winner1": winner1,
+      "winner2": winner2,
+      "winner3": winner3,
+      "event_id": event_id
+    }
+    console.log(data);
+    fetch('/declarewinners', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status == 1) {
+        alert('Winners declared successfully');
+        location.reload();
+      } else {
+        alert(data.message);
+        location.reload();
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error);
+    });
+  }
+</script>
+{% endblock %}

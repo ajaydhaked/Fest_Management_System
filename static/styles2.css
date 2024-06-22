@@ -11,8 +11,6 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f8f8f8;
-    /* Light background */
-    display: flex;
     align-items: center;
     justify-content: center;
     min-height: 100vh;

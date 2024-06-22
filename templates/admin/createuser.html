@@ -1,11 +1,10 @@
-{% extends "index.html" %} 
-{% block css %}
+{% extends "index.html" %}
+{% block css%}
 <link rel="stylesheet" type="text/css" href="/static/styles2.css" />
 {% endblock %}
 {% block footer%}{% endblock %}
-
 {% block content %}
-  <h1>Signup Form</h1>
+  <h1>Create User</h1>
   <form id="signup-form">
     <div class="form-section">
       <label for="username">Username:</label>
@@ -36,9 +35,13 @@
       <input type="text" id="roll-no" />
 
       <label for="enrollment-key">Enrollment Key:</label>
-      <input type="text" id="enrollment-key" />
+      <select id="enrollment-key" class="form-control">
+        <option value="" disabled selected>Select your Enrollment Key</option>
+        {% for key in keys %}
+        <option value="{{key[0]}}">{{key[1]}}</option>
+        {% endfor %}
+      </select>
     </div>
-
     <div id="student-fields" class="extra-fields" style="display: none">
       <label for="student-roll-no">Roll No:</label>
       <input type="text" id="student-roll-no" />
@@ -56,12 +59,13 @@
       </div>
     </div>
 
-    <button class="btn btn-success" id="submitbutton" type="submit">
-      Sign Up
+    <button class="btn btn-success my-2" id="submitbutton" type="submit">
+      Create User
     </button>
   </form>
 
-{% endblock %} {% block script %}
+{% endblock %} 
+{% block script %}
 <script>
   const radioButtons = document.querySelectorAll('input[name="type"]');
   const organiserFields = document.getElementById("organiser-fields");
@@ -94,17 +98,14 @@
   
   function enablesubmit(){
     document.getElementById("submitbutton").disabled = false;
-    document.getElementById("submitbutton").innerHTML = "Sign Up";
+    document.getElementById("submitbutton").innerHTML = "Create User";
   }
   function disablesumbit(){
     document.getElementById("submitbutton").disabled = true;
-    document.getElementById("submitbutton").innerHTML = "Signing Up...";
+    document.getElementById("submitbutton").innerHTML = "Creating User...";
   }
   
   function simpleMD5(message) {
-    // This is not a secure hashing algorithm and should not be used for real-world purposes.
-    // It's only provided for educational demonstration.
-  
     let hash = 0;
     for (let i = 0; i < message.length; i++) {
       const charCode = message.charCodeAt(i);
@@ -113,8 +114,6 @@
     }
     return hash.toString(16); // Convert to hexadecimal string
   }
-  
-  // Add event listeners to radio buttons
   radioButtons.forEach((button) => {
     button.addEventListener("change", toggleExtraFields);
   });
@@ -122,6 +121,11 @@
   signupForm.addEventListener("submit", async function (event) {
     event.preventDefault();
     disablesumbit();
+    temp = confirm("Are you sure you want to Create User?");
+    if(!temp){
+        enablesubmit();
+        return;
+    }
     if(document.getElementById("username").value.length < 4||document.getElementById("username").value.includes(" ")){
         enablesubmit();
         alert("Username should be atleast 4 characters long");
@@ -186,14 +190,15 @@
     console.log(result);
     if (result.status === 1) {
         console.log(result.token);
-        document.cookie = `token=${result.token}`;
+        document.getElementById("signup-form").reset();
         enablesubmit();
-        alert(result.message); // Display success message
-        window.location.replace("/events"); // Redirect to home page
+        alert("User Create Successfully"); // Display success message
     } else {
         enablesubmit();
         document.getElementById("signup-form").reset();
-        alert("Unable to signup!!"); // Display error message
+        document.getElementById("password").value = "";
+        document.getElementById("verify-password").value = "";
+        alert(result.message); // Display error message
     }
   });
 </script>

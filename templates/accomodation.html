@@ -1,0 +1,34 @@
+{% extends "index.html" %}
+{% block css%}{% endblock %}
+{% block footer%}{% endblock %}
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="text-center">Accomodation</h1>
+    </div>
+  </div>
+  <div class="row">
+      <div class="col-md-8 offset-md-2">
+          <div class="card">
+              <div class="card-body">
+                  <h5 class="card-title">Accomodation Rules:</h5>
+                  <ul class="list-group list-group-flush">
+                      <li class="list-group-item">Quiet hours are from 10:00 PM to 7:00 AM.</li>
+                      <li class="list-group-item">No smoking is allowed inside the accommodation.</li>
+                      <li class="list-group-item">Guests are not allowed without prior permission.</li>
+                      <li class="list-group-item">Keep shared spaces clean and tidy.</li>
+                      <li class="list-group-item">Respect your neighbors' privacy and property.</li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="card-body text-center">
+    <h5 class="card-title">Hall Allocated : {{hallname}}</h5>
+    {% if hallname == none %}
+        <p>Kindly contact us as your Hall is not Allocated</p>
+    {% endif %}
+  </div>
+  
+</div>
+{% endblock %}
