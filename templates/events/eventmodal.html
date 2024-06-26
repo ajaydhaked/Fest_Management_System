@@ -60,7 +60,7 @@
           <a class="btn btn-primary" onclick="registerevent(event,{{event.event_id}},1)" >Register</a>
           {% endif %} 
         {% elif user.is_organiser==1%}
-          <a href="http://127.0.0.1:8000/event_analytics/{{event.event_id}}"class="btn btn-primary">View Participants and Volunteers</a>
+          <a href="/event_analytics/{{event.event_id}}"class="btn btn-primary">View Participants and Volunteers</a>
         {% endif %}
       </div>
     </div>
